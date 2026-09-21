@@ -78,7 +78,7 @@ API (Retrofit) → DTO → Entity (Room) → Repository (Flow) → UseCase → V
 
 - [Android Developer Documentation](https://developer.android.com)
 - [Kotlin Documentation](https://kotlinlang.org)
-- [Berita Indo API](docs/API_CONTRACT.md)
+- [Berita Indo API](docs/conventions/API_CONTRACT.md)
 
 ## 9. Useful Agent Skills
 
