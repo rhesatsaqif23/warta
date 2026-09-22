@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.TrendingUp
+import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 fun SectionHeader(title: String, modifier: Modifier = Modifier) {
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
         Icon(
-            imageVector = Icons.Default.TrendingUp,
+            imageVector = Icons.AutoMirrored.Filled.TrendingUp,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary
         )
