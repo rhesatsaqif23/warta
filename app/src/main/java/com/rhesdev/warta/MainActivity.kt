@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
-import com.rhesdev.warta.navigation.WartaNavHost
+import com.rhesdev.warta.navigation.WartaNavGraph
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -15,7 +15,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             WartaTheme {
-                WartaNavHost()
+                WartaNavGraph()
             }
         }
     }

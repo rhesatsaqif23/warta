@@ -1,10 +1,8 @@
 package com.rhesdev.warta.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,48 +15,62 @@ import com.rhesdev.warta.feature.splash.presentation.SplashScreen
 import java.net.URLEncoder
 
 @Composable
-fun WartaNavHost() {
-    val navController = rememberNavController()
-    var startDestination by remember { mutableStateOf("splash") }
-
-    NavHost(navController = navController, startDestination = startDestination) {
-        composable("splash") {
+fun WartaNavGraph(
+    navController: NavHostController = rememberNavController(),
+    modifier: Modifier = Modifier
+) {
+    NavHost(
+        navController = navController,
+        startDestination = Routes.SPLASH,
+        modifier = modifier
+    ) {
+        composable(Routes.SPLASH) {
             SplashScreen(
                 onNavigateToHome = {
-                    startDestination = "home"
-                    navController.navigate("home") {
-                        popUpTo("splash") { inclusive = true }
+                    navController.navigate(Routes.HOME) {
+                        popUpTo(Routes.SPLASH) { inclusive = true }
                     }
                 }
             )
         }
-        composable("home") {
+
+        composable(Routes.HOME) {
             HomeScreen(
                 onNewsClick = { link ->
                     val encodedLink = URLEncoder.encode(link, "UTF-8")
-                    navController.navigate("detail/$encodedLink")
+                    navController.navigate(Routes.detail(encodedLink))
                 },
                 onSearchClick = {
-                    navController.navigate("search")
+                    navController.navigate(Routes.SEARCH)
                 }
             )
         }
+
         composable(
-            route = "detail/{newsLink}",
+            route = Routes.DETAIL,
             arguments = listOf(navArgument("newsLink") { type = NavType.StringType })
         ) {
             DetailScreen(
                 onBackClick = { navController.popBackStack() }
             )
         }
-        composable("search") {
+
+        composable(Routes.SEARCH) {
             SearchScreen(
                 onBackClick = { navController.popBackStack() },
                 onNewsClick = { link ->
                     val encodedLink = URLEncoder.encode(link, "UTF-8")
-                    navController.navigate("detail/$encodedLink")
+                    navController.navigate(Routes.detail(encodedLink))
                 }
             )
+        }
+
+        composable(Routes.CATEGORY) {
+            // TODO: CategoryScreen
+        }
+
+        composable(Routes.PROFILE) {
+            // TODO: ProfileScreen
         }
     }
 }
