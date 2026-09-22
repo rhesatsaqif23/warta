@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
+/** Room entity for news articles stored locally. */
 @Entity(
     tableName = "news_table",
     indices = [

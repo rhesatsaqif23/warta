@@ -7,6 +7,7 @@ import androidx.room.Query
 import com.rhesdev.warta.core.data.local.entity.NewsEntity
 import kotlinx.coroutines.flow.Flow
 
+/** Data access object for news table operations. */
 @Dao
 interface NewsDao {
 

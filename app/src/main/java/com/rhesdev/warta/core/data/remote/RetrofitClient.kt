@@ -5,6 +5,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+/** Singleton Retrofit client for API calls. */
 object RetrofitClient {
 
     private const val BASE_URL = "https://berita-indo-api-next.vercel.app/v1/"

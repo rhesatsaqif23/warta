@@ -5,6 +5,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
+/** Retrofit interface for Berita Indo API endpoints. */
 interface NewsApi {
 
     @GET("{source}")

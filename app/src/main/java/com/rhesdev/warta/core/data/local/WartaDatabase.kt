@@ -7,6 +7,7 @@ import androidx.room.RoomDatabase
 import com.rhesdev.warta.core.data.local.dao.NewsDao
 import com.rhesdev.warta.core.data.local.entity.NewsEntity
 
+/** Room database providing access to news table. */
 @Database(entities = [NewsEntity::class], version = 1, exportSchema = false)
 abstract class WartaDatabase : RoomDatabase() {
     abstract fun newsDao(): NewsDao

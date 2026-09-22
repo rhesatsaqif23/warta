@@ -1,5 +1,6 @@
 package com.rhesdev.warta.core.domain.model
 
+/** Domain model for news article. Pure Kotlin, no Android dependencies. */
 data class News(
     val link: String,
     val title: String,
