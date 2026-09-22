@@ -1,8 +1,9 @@
 package com.rhesdev.warta.feature.home.presentation.list
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rhesdev.warta.feature.news.domain.usecase.GetNewsByCategoryUseCase
+import com.rhesdev.warta.feature.news.domain.usecase.GetTopNewsUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.RefreshNewsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,9 +14,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val TAG = "HomeViewModel"
+
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getNewsByCategoryUseCase: GetNewsByCategoryUseCase,
+    private val getTopNewsUseCase: GetTopNewsUseCase,
     private val refreshNewsUseCase: RefreshNewsUseCase
 ) : ViewModel() {
 
@@ -23,18 +26,29 @@ class HomeViewModel @Inject constructor(
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     init {
-        loadNews("nasional")
+        Log.d(TAG, "ViewModel initialized")
+        loadNews()
     }
 
-    fun loadNews(category: String) {
+    fun loadNews(category: String? = null) {
+        Log.d(TAG, "loadNews called, category=$category")
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null, selectedCategory = category) }
-            getNewsByCategoryUseCase(category)
+            try {
+                Log.d(TAG, "Fetching from API")
+                refreshNewsUseCase()
+                Log.d(TAG, "API fetch complete")
+            } catch (e: Exception) {
+                Log.e(TAG, "API fetch failed, using cache", e)
+            }
+            getTopNewsUseCase()
                 .catch { e ->
+                    Log.e(TAG, "Error reading from Room", e)
                     _uiState.update { it.copy(error = e.message, isLoading = false) }
                 }
                 .collect { news ->
-                    _uiState.update { it.copy(topNews = news, isLoading = false) }
+                    Log.d(TAG, "Received ${news.size} total news items")
+                    _uiState.update { it.copy(allNews = news, isLoading = false) }
                 }
         }
     }
@@ -43,7 +57,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isRefreshing = true) }
             try {
-                refreshNewsUseCase("cnn-news", _uiState.value.selectedCategory)
+                refreshNewsUseCase()
             } catch (e: Exception) {
                 _uiState.update { it.copy(error = e.message) }
             } finally {

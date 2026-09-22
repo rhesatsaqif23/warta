@@ -5,10 +5,10 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-/** Singleton Retrofit client for API calls. */
+/** Singleton Retrofit client for freenewsapi.ai. */
 object RetrofitClient {
 
-    private const val BASE_URL = "https://berita-indo-api-next.vercel.app/v1/"
+    private const val BASE_URL = "https://freenewsapi.ai/v1/"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY

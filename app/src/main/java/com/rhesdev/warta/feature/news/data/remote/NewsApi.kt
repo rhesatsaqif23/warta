@@ -2,27 +2,24 @@ package com.rhesdev.warta.feature.news.data.remote
 
 import com.rhesdev.warta.feature.news.data.remote.dto.NewsResponse
 import retrofit2.http.GET
-import retrofit2.http.Path
 import retrofit2.http.Query
 
-/** Retrofit interface for Berita Indo API endpoints. */
+/** Retrofit interface for freenewsapi.ai endpoints. */
 interface NewsApi {
 
-    @GET("{source}")
+    @GET("search")
     suspend fun getNews(
-        @Path("source") source: String
+        @Query("country") country: String = "ID",
+        @Query("lang") lang: String = "id",
+        @Query("size") size: Int = 30,
+        @Query("sort") sort: String = "date"
     ): NewsResponse
 
-    @GET("{source}/{type}")
-    suspend fun getNewsByType(
-        @Path("source") source: String,
-        @Path("type") type: String
-    ): NewsResponse
-
-    @GET("{source}/{type}")
+    @GET("search")
     suspend fun searchNews(
-        @Path("source") source: String,
-        @Path("type") type: String,
-        @Query("search") query: String
+        @Query("q") query: String,
+        @Query("country") country: String = "ID",
+        @Query("lang") lang: String = "id",
+        @Query("size") size: Int = 30
     ): NewsResponse
 }

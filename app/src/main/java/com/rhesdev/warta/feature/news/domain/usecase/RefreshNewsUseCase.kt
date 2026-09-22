@@ -7,6 +7,5 @@ import javax.inject.Inject
 class RefreshNewsUseCase @Inject constructor(
     private val repository: NewsRepository
 ) {
-    suspend operator fun invoke(source: String, category: String) =
-        repository.refreshNews(source, category)
+    suspend operator fun invoke() = repository.refreshNews()
 }

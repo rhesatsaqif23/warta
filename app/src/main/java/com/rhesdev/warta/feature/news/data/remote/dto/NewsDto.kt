@@ -2,17 +2,15 @@ package com.rhesdev.warta.feature.news.data.remote.dto
 
 import com.google.gson.annotations.SerializedName
 
-/** DTO for news article from API. Fields are nullable. */
+/** DTO for news article from freenewsapi.ai. Fields are nullable. */
 data class NewsDto(
+    @SerializedName("id") val id: String?,
+    @SerializedName("url") val url: String?,
     @SerializedName("title") val title: String?,
-    @SerializedName("link") val link: String?,
-    @SerializedName("contentSnippet") val contentSnippet: String?,
-    @SerializedName("isoDate") val isoDate: String?,
-    @SerializedName("image") val image: ImageDto?
-)
-
-/** Nested DTO for news image URLs. */
-data class ImageDto(
-    @SerializedName("small") val small: String?,
-    @SerializedName("large") val large: String?
+    @SerializedName("description") val description: String?,
+    @SerializedName("published_at") val publishedAt: String?,
+    @SerializedName("host") val host: String?,
+    @SerializedName("sitename") val sitename: String?,
+    @SerializedName("image") val image: String?,
+    @SerializedName("categories") val categories: List<String>?
 )

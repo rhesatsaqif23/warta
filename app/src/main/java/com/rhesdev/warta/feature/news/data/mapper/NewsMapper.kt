@@ -5,15 +5,15 @@ import com.rhesdev.warta.feature.news.data.remote.dto.NewsDto
 import com.rhesdev.warta.feature.news.domain.model.News
 
 /** Convert API DTO to Room Entity. Handles nullable fields. */
-fun NewsDto.toEntity(source: String, category: String): NewsEntity {
+fun NewsDto.toEntity(): NewsEntity {
     return NewsEntity(
-        link = link ?: "",
+        link = url ?: "",
         title = title ?: "",
-        contentSnippet = contentSnippet ?: "",
-        isoDate = isoDate ?: "",
-        imageUrl = image?.small ?: image?.large ?: "",
-        source = source,
-        category = category
+        contentSnippet = description ?: "",
+        isoDate = publishedAt ?: "",
+        imageUrl = image ?: "",
+        source = sitename ?: host ?: "",
+        category = categories?.firstOrNull() ?: "general"
     )
 }
 
