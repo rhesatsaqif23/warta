@@ -1,11 +1,11 @@
-package com.rhesdev.warta.core.data.repository
+package com.rhesdev.warta.feature.news.data.repository
 
-import com.rhesdev.warta.core.data.local.dao.NewsDao
-import com.rhesdev.warta.core.data.mapper.toDomain
-import com.rhesdev.warta.core.data.mapper.toEntity
-import com.rhesdev.warta.core.data.remote.NewsApi
-import com.rhesdev.warta.core.domain.model.News
-import com.rhesdev.warta.core.domain.repository.NewsRepository
+import com.rhesdev.warta.feature.news.data.local.NewsDao
+import com.rhesdev.warta.feature.news.data.mapper.toDomain
+import com.rhesdev.warta.feature.news.data.mapper.toEntity
+import com.rhesdev.warta.feature.news.data.remote.NewsApi
+import com.rhesdev.warta.feature.news.domain.model.News
+import com.rhesdev.warta.feature.news.domain.repository.NewsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

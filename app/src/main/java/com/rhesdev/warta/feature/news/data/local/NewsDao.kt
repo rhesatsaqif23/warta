@@ -1,10 +1,9 @@
-package com.rhesdev.warta.core.data.local.dao
+package com.rhesdev.warta.feature.news.data.local
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.rhesdev.warta.core.data.local.entity.NewsEntity
 import kotlinx.coroutines.flow.Flow
 
 /** Data access object for news table operations. */

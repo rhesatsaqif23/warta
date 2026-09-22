@@ -1,6 +1,6 @@
-package com.rhesdev.warta.core.domain.repository
+package com.rhesdev.warta.feature.news.domain.repository
 
-import com.rhesdev.warta.core.domain.model.News
+import com.rhesdev.warta.feature.news.domain.model.News
 import kotlinx.coroutines.flow.Flow
 
 /** Repository interface defining news data operations. */

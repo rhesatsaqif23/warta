@@ -1,4 +1,4 @@
-package com.rhesdev.warta.core.data.local.entity
+package com.rhesdev.warta.feature.news.data.local
 
 import androidx.room.Entity
 import androidx.room.Index

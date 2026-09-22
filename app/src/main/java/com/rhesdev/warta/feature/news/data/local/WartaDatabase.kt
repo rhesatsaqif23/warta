@@ -1,11 +1,9 @@
-package com.rhesdev.warta.core.data.local
+package com.rhesdev.warta.feature.news.data.local
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.rhesdev.warta.core.data.local.dao.NewsDao
-import com.rhesdev.warta.core.data.local.entity.NewsEntity
 
 /** Room database providing access to news table. */
 @Database(entities = [NewsEntity::class], version = 1, exportSchema = false)

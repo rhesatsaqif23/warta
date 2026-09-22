@@ -1,4 +1,4 @@
-package com.rhesdev.warta.core.data.remote.dto
+package com.rhesdev.warta.feature.news.data.remote.dto
 
 import com.google.gson.annotations.SerializedName
 

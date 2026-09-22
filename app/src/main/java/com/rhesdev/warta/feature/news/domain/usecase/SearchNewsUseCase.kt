@@ -1,7 +1,7 @@
-package com.rhesdev.warta.core.domain.usecase
+package com.rhesdev.warta.feature.news.domain.usecase
 
-import com.rhesdev.warta.core.domain.model.News
-import com.rhesdev.warta.core.domain.repository.NewsRepository
+import com.rhesdev.warta.feature.news.domain.model.News
+import com.rhesdev.warta.feature.news.domain.repository.NewsRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

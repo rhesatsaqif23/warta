@@ -1,6 +1,6 @@
-package com.rhesdev.warta.core.domain.usecase
+package com.rhesdev.warta.feature.news.domain.usecase
 
-import com.rhesdev.warta.core.domain.repository.NewsRepository
+import com.rhesdev.warta.feature.news.domain.repository.NewsRepository
 import javax.inject.Inject
 
 /** Use case to refresh news from API and store in database. */

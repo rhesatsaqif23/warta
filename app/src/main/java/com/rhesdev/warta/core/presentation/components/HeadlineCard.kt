@@ -19,7 +19,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.rhesdev.warta.core.domain.model.News
+import com.rhesdev.warta.feature.news.domain.model.News
 import com.rhesdev.warta.core.presentation.theme.PrimaryGradient
 
 /** Large headline card with gradient scrim and "Baca" pill button. */

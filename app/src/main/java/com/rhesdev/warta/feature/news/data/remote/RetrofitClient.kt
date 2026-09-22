@@ -1,4 +1,4 @@
-package com.rhesdev.warta.core.data.remote
+package com.rhesdev.warta.feature.news.data.remote
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

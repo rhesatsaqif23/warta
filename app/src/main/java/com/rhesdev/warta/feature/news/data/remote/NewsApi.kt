@@ -1,6 +1,6 @@
-package com.rhesdev.warta.core.data.remote
+package com.rhesdev.warta.feature.news.data.remote
 
-import com.rhesdev.warta.core.data.remote.dto.NewsResponse
+import com.rhesdev.warta.feature.news.data.remote.dto.NewsResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query

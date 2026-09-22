@@ -23,7 +23,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.rhesdev.warta.core.domain.model.News
+import com.rhesdev.warta.feature.news.domain.model.News
 
 /** Popular news card with image, title, date, and share/more actions. */
 @Composable

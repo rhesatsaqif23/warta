@@ -1,8 +1,8 @@
-package com.rhesdev.warta.core.data.mapper
+package com.rhesdev.warta.feature.news.data.mapper
 
-import com.rhesdev.warta.core.data.local.entity.NewsEntity
-import com.rhesdev.warta.core.data.remote.dto.NewsDto
-import com.rhesdev.warta.core.domain.model.News
+import com.rhesdev.warta.feature.news.data.local.NewsEntity
+import com.rhesdev.warta.feature.news.data.remote.dto.NewsDto
+import com.rhesdev.warta.feature.news.domain.model.News
 
 /** Convert API DTO to Room Entity. Handles nullable fields. */
 fun NewsDto.toEntity(source: String, category: String): NewsEntity {
