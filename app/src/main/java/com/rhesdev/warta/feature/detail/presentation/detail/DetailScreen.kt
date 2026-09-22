@@ -29,10 +29,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rhesdev.warta.core.presentation.components.LoadingScreen
+import com.rhesdev.warta.core.presentation.theme.WartaTheme
+import com.rhesdev.warta.feature.news.domain.model.News
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,64 +71,131 @@ fun DetailScreen(
             )
         }
     ) { paddingValues ->
-        when {
-            uiState.isLoading -> LoadingScreen(modifier = Modifier.padding(paddingValues))
-            uiState.error != null -> {
-                Text(
-                    text = uiState.error ?: "Terjadi kesalahan",
-                    modifier = Modifier.padding(16.dp),
-                    color = MaterialTheme.colorScheme.error
-                )
-            }
-            uiState.news != null -> {
-                val news = uiState.news!!
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    AsyncImage(
-                        model = news.imageUrl,
-                        contentDescription = news.title,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(250.dp)
-                            .clip(RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
-                    )
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(
-                            text = news.source.uppercase(),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = news.title,
-                            style = MaterialTheme.typography.headlineMedium
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = news.isoDate,
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = news.contentSnippet,
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                        Spacer(modifier = Modifier.height(24.dp))
-                        TextButton(onClick = {
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(news.link))
-                            context.startActivity(intent)
-                        }) {
-                            Text("Baca Selengkapnya")
-                        }
-                    }
-                }
+        DetailContent(
+            uiState = uiState,
+            modifier = Modifier.padding(paddingValues)
+        )
+    }
+}
+
+@Composable
+fun DetailContent(
+    uiState: DetailUiState,
+    modifier: Modifier = Modifier
+) {
+    val context = LocalContext.current
+
+    when {
+        uiState.isLoading -> LoadingScreen(modifier = modifier)
+        uiState.error != null -> {
+            Text(
+                text = uiState.error ?: "Terjadi kesalahan",
+                modifier = modifier.padding(16.dp),
+                color = MaterialTheme.colorScheme.error
+            )
+        }
+        uiState.news != null -> {
+            NewsDetailContent(
+                news = uiState.news,
+                onReadMore = { link ->
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+                    context.startActivity(intent)
+                },
+                modifier = modifier
+            )
+        }
+    }
+}
+
+@Composable
+private fun NewsDetailContent(
+    news: News,
+    onReadMore: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+    ) {
+        AsyncImage(
+            model = news.imageUrl,
+            contentDescription = news.title,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(250.dp)
+                .clip(RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
+        )
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = news.source.uppercase(),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = news.title,
+                style = MaterialTheme.typography.headlineMedium
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = news.isoDate,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = news.contentSnippet,
+                style = MaterialTheme.typography.bodyLarge
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            TextButton(onClick = { onReadMore(news.link) }) {
+                Text("Baca Selengkapnya")
             }
         }
+    }
+}
+
+private val sampleNews = News(
+    link = "https://example.com",
+    title = "Ekonomi Indonesia Tumbuh Pesat di Q1 2024",
+    contentSnippet = "Pertumbuhan ekonomi Indonesia mencapai 5.03% pada kuartal pertama 2024. Hal ini menunjukkan pemulihan ekonomi yang solid pasca pandemi. Para ahli ekonomi memprediksi pertumbuhan ini akan berlanjut sepanjang tahun 2024.",
+    isoDate = "2 jam lalu",
+    imageUrl = "",
+    source = "CNN",
+    category = "nasional"
+)
+
+@Preview(showBackground = true)
+@Composable
+private fun DetailContentPreview() {
+    WartaTheme {
+        DetailContent(
+            uiState = DetailUiState(
+                news = sampleNews,
+                isLoading = false
+            )
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun DetailContentLoadingPreview() {
+    WartaTheme {
+        DetailContent(
+            uiState = DetailUiState(isLoading = true)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun DetailContentErrorPreview() {
+    WartaTheme {
+        DetailContent(
+            uiState = DetailUiState(error = "Gagal memuat berita")
+        )
     }
 }

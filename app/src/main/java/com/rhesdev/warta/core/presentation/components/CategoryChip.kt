@@ -29,13 +29,13 @@ fun CategoryChip(
     Text(
         text = label,
         style = MaterialTheme.typography.labelMedium,
-        color = if (selected) Color.White else MaterialTheme.colorScheme.onBackground,
+        color = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onBackground,
         modifier = modifier
             .clip(shape)
             .then(
                 if (selected) Modifier.background(PrimaryGradient)
                 else Modifier
-                    .background(Color.White)
+                    .background(MaterialTheme.colorScheme.surface)
                     .border(BorderStroke(1.dp, Outline), shape)
             )
             .clickable(onClick = onClick)

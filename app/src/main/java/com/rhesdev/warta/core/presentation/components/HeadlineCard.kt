@@ -49,7 +49,7 @@ fun HeadlineCard(
         Text(
             text = news.title,
             style = MaterialTheme.typography.bodyLarge,
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onPrimary,
             maxLines = 2,
             modifier = Modifier
                 .align(Alignment.BottomStart)
@@ -58,7 +58,7 @@ fun HeadlineCard(
         Text(
             text = "Baca",
             style = MaterialTheme.typography.labelMedium,
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp)

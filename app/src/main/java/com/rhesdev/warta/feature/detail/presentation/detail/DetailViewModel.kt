@@ -3,7 +3,7 @@ package com.rhesdev.warta.feature.detail.presentation.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rhesdev.warta.feature.news.domain.repository.NewsRepository
+import com.rhesdev.warta.feature.news.domain.usecase.GetNewsByLinkUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,7 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val repository: NewsRepository
+    private val getNewsByLinkUseCase: GetNewsByLinkUseCase
 ) : ViewModel() {
 
     private val newsLink: String = savedStateHandle["newsLink"] ?: ""
@@ -31,7 +31,7 @@ class DetailViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             try {
-                val news = repository.getNewsByLink(newsLink)
+                val news = getNewsByLinkUseCase(newsLink)
                 _uiState.update { it.copy(news = news, isLoading = false) }
             } catch (e: Exception) {
                 _uiState.update { it.copy(error = e.message, isLoading = false) }

@@ -3,7 +3,6 @@ package com.rhesdev.warta.feature.home.presentation.list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rhesdev.warta.feature.news.domain.usecase.GetNewsByCategoryUseCase
-import com.rhesdev.warta.feature.news.domain.usecase.GetTopNewsUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.RefreshNewsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +15,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getTopNewsUseCase: GetTopNewsUseCase,
     private val getNewsByCategoryUseCase: GetNewsByCategoryUseCase,
     private val refreshNewsUseCase: RefreshNewsUseCase
 ) : ViewModel() {

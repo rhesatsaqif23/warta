@@ -35,7 +35,7 @@ fun TrendingNewsItem(
         modifier = modifier
             .fillMaxWidth()
             .shadow(4.dp, RoundedCornerShape(15.dp))
-            .background(Color.White, RoundedCornerShape(15.dp))
+            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(15.dp))
             .clickable(onClick = onClick)
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically

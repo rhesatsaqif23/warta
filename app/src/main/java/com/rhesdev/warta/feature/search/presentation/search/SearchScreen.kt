@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -24,10 +25,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rhesdev.warta.core.presentation.components.LoadingScreen
 import com.rhesdev.warta.core.presentation.components.NewsCard
+import com.rhesdev.warta.core.presentation.theme.WartaTheme
+import com.rhesdev.warta.feature.news.domain.model.News
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,30 +76,127 @@ fun SearchScreen(
             )
         }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            when {
-                uiState.isLoading -> LoadingScreen()
-                uiState.results.isEmpty() && uiState.query.isNotBlank() -> {
-                    Text(
-                        text = "Tidak ada hasil untuk \"${uiState.query}\"",
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
-                else -> {
-                    LazyColumn {
-                        items(uiState.results) { news ->
-                            NewsCard(
-                                news = news,
-                                onClick = { onNewsClick(news.link) }
-                            )
-                        }
+        SearchContent(
+            uiState = uiState,
+            onNewsClick = onNewsClick,
+            modifier = Modifier.padding(paddingValues)
+        )
+    }
+}
+
+@Composable
+fun SearchContent(
+    uiState: SearchUiState,
+    onNewsClick: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.fillMaxSize()
+    ) {
+        when {
+            uiState.isLoading -> LoadingScreen()
+            uiState.error != null -> {
+                Text(
+                    text = uiState.error ?: "Terjadi kesalahan",
+                    modifier = Modifier.padding(16.dp),
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+            uiState.results.isEmpty() && uiState.query.isNotBlank() -> {
+                Text(
+                    text = "Tidak ada hasil untuk \"${uiState.query}\"",
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+            else -> {
+                LazyColumn {
+                    items(uiState.results) { news ->
+                        NewsCard(
+                            news = news,
+                            onClick = { onNewsClick(news.link) }
+                        )
                     }
                 }
             }
         }
+    }
+}
+
+private val sampleResults = listOf(
+    News(
+        link = "https://example.com/1",
+        title = "Ekonomi Indonesia Tumbuh Pesat",
+        contentSnippet = "Pertumbuhan ekonomi Indonesia mencapai 5.03%.",
+        isoDate = "2 jam lalu",
+        imageUrl = "",
+        source = "CNN",
+        category = "nasional"
+    ),
+    News(
+        link = "https://example.com/2",
+        title = "Tips Ekonomi di Masa Sulit",
+        contentSnippet = "Pakar ekonomi berbagi tips menghadapi inflasi.",
+        isoDate = "3 jam lalu",
+        imageUrl = "",
+        source = "Kompas",
+        category = "bisnis"
+    )
+)
+
+@Preview(showBackground = true)
+@Composable
+private fun SearchContentPreview() {
+    WartaTheme {
+        SearchContent(
+            uiState = SearchUiState(
+                query = "ekonomi",
+                results = sampleResults,
+                isLoading = false
+            ),
+            onNewsClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SearchContentLoadingPreview() {
+    WartaTheme {
+        SearchContent(
+            uiState = SearchUiState(
+                query = "ekonomi",
+                isLoading = true
+            ),
+            onNewsClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SearchContentEmptyPreview() {
+    WartaTheme {
+        SearchContent(
+            uiState = SearchUiState(
+                query = "xyz123",
+                results = emptyList(),
+                isLoading = false
+            ),
+            onNewsClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SearchContentErrorPreview() {
+    WartaTheme {
+        SearchContent(
+            uiState = SearchUiState(
+                query = "ekonomi",
+                error = "Gagal mencari berita"
+            ),
+            onNewsClick = {}
+        )
     }
 }

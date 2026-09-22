@@ -26,7 +26,7 @@ import com.rhesdev.warta.core.presentation.theme.OutlineVariant
 fun SearchField(onClick: () -> Unit, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
-            .background(Color.White, RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(16.dp))
             .border(BorderStroke(1.dp, OutlineVariant), RoundedCornerShape(16.dp))
             .clickable(onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 8.dp)

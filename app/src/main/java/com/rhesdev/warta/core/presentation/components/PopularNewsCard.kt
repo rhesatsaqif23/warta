@@ -36,7 +36,7 @@ fun PopularNewsCard(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(Color.White, RoundedCornerShape(15.dp))
+            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(15.dp))
             .clickable(onClick = onClick)
             .padding(bottom = 8.dp)
     ) {
