@@ -21,7 +21,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.rhesdev.warta.feature.news.domain.model.News
 
 /** Horizontal row card for trending news items. */
@@ -55,8 +54,8 @@ fun TrendingNewsItem(
                 modifier = Modifier.padding(top = 4.dp)
             )
         }
-        AsyncImage(
-            model = news.imageUrl,
+        NewsImage(
+            imageUrl = news.imageUrl,
             contentDescription = news.title,
             contentScale = ContentScale.Crop,
             modifier = Modifier

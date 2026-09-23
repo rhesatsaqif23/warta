@@ -10,11 +10,15 @@ data class HomeUiState(
     val error: String? = null
 ) {
     val filteredNews: List<News>
-        get() = if (selectedCategory == null) {
-            allNews
-        } else {
-            allNews.filter { it.category == selectedCategory }
-        }
+        get() = allNews
+            .filter { it.imageUrl.isNotBlank() }
+            .let { withImage ->
+                if (selectedCategory == null) {
+                    withImage
+                } else {
+                    withImage.filter { it.category == selectedCategory }
+                }
+            }
 
     val headlineNews: List<News> get() = filteredNews.take(3)
     val popularNews: News? get() = filteredNews.getOrNull(3)

@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.rhesdev.warta.feature.news.domain.model.News
 import com.rhesdev.warta.core.presentation.theme.PrimaryGradient
 
@@ -35,8 +34,8 @@ fun HeadlineCard(
             .height(180.dp)
             .clip(RoundedCornerShape(16.dp))
     ) {
-        AsyncImage(
-            model = news.imageUrl,
+        NewsImage(
+            imageUrl = news.imageUrl,
             contentDescription = news.title,
             contentScale = ContentScale.Crop,
             modifier = Modifier.matchParentSize()

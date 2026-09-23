@@ -53,7 +53,12 @@ class SearchViewModel @Inject constructor(
                     _uiState.update { it.copy(error = e.message, isLoading = false) }
                 }
                 .collect { results ->
-                    _uiState.update { it.copy(results = results, isLoading = false) }
+                    _uiState.update {
+                        it.copy(
+                            results = results.filter { news -> news.imageUrl.isNotBlank() },
+                            isLoading = false
+                        )
+                    }
                 }
         }
     }

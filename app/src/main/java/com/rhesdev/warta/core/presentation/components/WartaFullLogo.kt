@@ -1,19 +1,25 @@
 package com.rhesdev.warta.core.presentation.components
 
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 
 /** Warta brand logo with text, loaded from assets/img_logo_with_text.png. */
 @Composable
-fun WartaFullLogo(modifier: Modifier = Modifier) {
+fun WartaFullLogo(
+    modifier: Modifier = Modifier,
+    width: Dp = 240.dp
+) {
     AsyncImage(
         model = "file:///android_asset/img_logo_with_text.png",
         contentDescription = "Warta",
         contentScale = ContentScale.Fit,
-        modifier = modifier
+        modifier = modifier.width(width)
     )
 }
 

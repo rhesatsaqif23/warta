@@ -32,9 +32,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
 import com.rhesdev.warta.core.presentation.components.ErrorState
 import com.rhesdev.warta.core.presentation.components.LoadingScreen
+import com.rhesdev.warta.core.presentation.components.NewsImage
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
 import com.rhesdev.warta.feature.news.domain.model.News
 
@@ -121,8 +121,8 @@ private fun NewsDetailContent(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        AsyncImage(
-            model = news.imageUrl,
+        NewsImage(
+            imageUrl = news.imageUrl,
             contentDescription = news.title,
             contentScale = ContentScale.Crop,
             modifier = Modifier

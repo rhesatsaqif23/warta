@@ -19,7 +19,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.rhesdev.warta.feature.news.domain.model.News
 
 /** Generic news row item with thumbnail + title + source. */
@@ -36,8 +35,8 @@ fun NewsCard(
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        AsyncImage(
-            model = news.imageUrl,
+        NewsImage(
+            imageUrl = news.imageUrl,
             contentDescription = news.title,
             contentScale = ContentScale.Crop,
             modifier = Modifier

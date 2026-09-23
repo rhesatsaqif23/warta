@@ -22,7 +22,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.rhesdev.warta.feature.news.domain.model.News
 
 /** Popular news card with image, title, date, and share/more actions. */
@@ -40,8 +39,8 @@ fun PopularNewsCard(
             .clickable(onClick = onClick)
             .padding(bottom = 8.dp)
     ) {
-        AsyncImage(
-            model = news.imageUrl,
+        NewsImage(
+            imageUrl = news.imageUrl,
             contentDescription = news.title,
             contentScale = ContentScale.Crop,
             modifier = Modifier
