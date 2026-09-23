@@ -45,21 +45,27 @@ Struktur modularisasi berbasis fitur, bukan berbasis tipe file.
 
 ```text
 feature/
- └── product/
-      ├── data/
-      │    ├── local/       (dao, entity)
-      │    ├── remote/      (api, dto)
-      │    ├── mapper/
-      │    └── repository/  (ProductRepositoryImpl)
-      ├── domain/
-      │    ├── model/
-      │    ├── repository/  (ProductRepository - interface)
-      │    └── usecase/
-      ├── presentation/
-      │    ├── list/        (Screen, ViewModel, UiState, components)
-      │    └── detail/
-      └── di/               (ProductModule)
+ ├── news/                              # satu capability: data + domain + layarnya
+ │    ├── data/
+ │    │    ├── local/                   (dao, entity)
+ │    │    ├── remote/                  (api, dto)
+ │    │    ├── mapper/
+ │    │    └── repository/              (NewsRepositoryImpl)
+ │    ├── domain/
+ │    │    ├── model/
+ │    │    ├── repository/              (NewsRepository - interface)
+ │    │    └── usecase/
+ │    └── presentation/
+ │         ├── home/                    (Screen, ViewModel, UiState, UiEvent, components)
+ │         ├── search/
+ │         └── detail/
+ └── splash/                            # app entry, UI-only
+      └── presentation/                 (Screen + Content)
 ```
+
+Satu capability = satu feature: `news` memiliki tabel, repository, use case,
+*dan* semua layarnya — tanpa feature cangkang (`home/`, `search/` terpisah).
+Modul DI dipusatkan di `core/di/` (bukan `feature/.../di/`).
 
 ### 7. Room
 

@@ -1,4 +1,4 @@
-package com.rhesdev.warta.feature.detail.presentation.detail
+package com.rhesdev.warta.feature.news.presentation.detail
 
 import com.rhesdev.warta.feature.news.domain.model.News
 

@@ -1,4 +1,4 @@
-package com.rhesdev.warta.feature.home.presentation.list.components
+package com.rhesdev.warta.feature.news.presentation.home.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues

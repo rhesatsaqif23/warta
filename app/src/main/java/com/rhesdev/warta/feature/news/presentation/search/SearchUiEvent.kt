@@ -1,4 +1,4 @@
-package com.rhesdev.warta.feature.search.presentation.search
+package com.rhesdev.warta.feature.news.presentation.search
 
 // One-way user actions for the Search screen.
 sealed interface SearchUiEvent {

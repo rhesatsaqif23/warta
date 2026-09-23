@@ -1,4 +1,4 @@
-package com.rhesdev.warta.feature.search.presentation.search
+package com.rhesdev.warta.feature.news.presentation.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

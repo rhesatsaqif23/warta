@@ -18,9 +18,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.rhesdev.warta.core.presentation.components.EmptyState
 import com.rhesdev.warta.core.presentation.components.WartaBottomNavigationBar
-import com.rhesdev.warta.feature.detail.presentation.detail.DetailScreen
-import com.rhesdev.warta.feature.home.presentation.list.HomeScreen
-import com.rhesdev.warta.feature.search.presentation.search.SearchScreen
+import com.rhesdev.warta.feature.news.presentation.detail.DetailScreen
+import com.rhesdev.warta.feature.news.presentation.home.HomeScreen
+import com.rhesdev.warta.feature.news.presentation.search.SearchScreen
 import com.rhesdev.warta.feature.splash.presentation.SplashScreen
 import java.net.URLEncoder
 

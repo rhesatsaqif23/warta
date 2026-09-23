@@ -1,4 +1,4 @@
-package com.rhesdev.warta.feature.home.presentation.list
+package com.rhesdev.warta.feature.news.presentation.home
 
 // One-way user actions for the Home screen.
 sealed interface HomeUiEvent {

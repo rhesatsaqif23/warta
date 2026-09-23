@@ -1,4 +1,4 @@
-package com.rhesdev.warta.feature.home.presentation.list
+package com.rhesdev.warta.feature.news.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

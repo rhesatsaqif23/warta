@@ -1,4 +1,4 @@
-package com.rhesdev.warta.feature.search.presentation.search
+package com.rhesdev.warta.feature.news.presentation.search
 
 import com.rhesdev.warta.feature.news.domain.model.News
 

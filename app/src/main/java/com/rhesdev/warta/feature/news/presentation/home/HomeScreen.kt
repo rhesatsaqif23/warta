@@ -1,15 +1,19 @@
-package com.rhesdev.warta.feature.home.presentation.list
+package com.rhesdev.warta.feature.news.presentation.home
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -23,8 +27,8 @@ import com.rhesdev.warta.core.presentation.components.PopularNewsCard
 import com.rhesdev.warta.core.presentation.components.SectionHeader
 import com.rhesdev.warta.core.presentation.components.TrendingNewsItem
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
-import com.rhesdev.warta.feature.home.presentation.list.components.HomeCategoryRow
-import com.rhesdev.warta.feature.home.presentation.list.components.homeCategories
+import com.rhesdev.warta.feature.news.presentation.home.components.HomeCategoryRow
+import com.rhesdev.warta.feature.news.presentation.home.components.homeCategories
 import com.rhesdev.warta.feature.news.domain.model.News
 
 // Home screen wiring state to content plus previews.
@@ -52,43 +56,6 @@ fun HomeContent(
     onSearchClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    when {
-        uiState.isLoading -> LoadingScreen(modifier = modifier)
-        uiState.error != null && uiState.filteredNews.isEmpty() -> {
-            ErrorState(
-                title = "Gagal memuat berita",
-                message = uiState.error ?: "Terjadi kesalahan",
-                onRetry = { onEvent(HomeUiEvent.OnRetry) },
-                modifier = modifier
-            )
-        }
-        uiState.filteredNews.isEmpty() -> {
-            EmptyState(
-                title = "Tidak ada berita",
-                message = "Belum ada berita untuk kategori ini",
-                modifier = modifier
-            )
-        }
-        else -> {
-            NewsListContent(
-                uiState = uiState,
-                onEvent = onEvent,
-                onNewsClick = onNewsClick,
-                onSearchClick = onSearchClick,
-                modifier = modifier
-            )
-        }
-    }
-}
-
-@Composable
-private fun NewsListContent(
-    uiState: HomeUiState,
-    onEvent: (HomeUiEvent) -> Unit,
-    onNewsClick: (String) -> Unit,
-    onSearchClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -105,51 +72,92 @@ private fun NewsListContent(
             )
         }
 
-        item {
-            LazyRow(
-                contentPadding = PaddingValues(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                items(uiState.headlineNews, key = { it.link }) { news ->
-                    HeadlineCard(
-                        news = news,
-                        onClick = { onNewsClick(news.link) }
-                    )
-                }
+        when {
+            uiState.isLoading -> StatePlaceholder {
+                LoadingScreen()
             }
+            uiState.error != null && uiState.filteredNews.isEmpty() -> StatePlaceholder {
+                ErrorState(
+                    title = "Gagal memuat berita",
+                    message = uiState.error ?: "Terjadi kesalahan",
+                    onRetry = { onEvent(HomeUiEvent.OnRetry) }
+                )
+            }
+            uiState.filteredNews.isEmpty() -> StatePlaceholder {
+                EmptyState(
+                    title = "Tidak ada berita",
+                    message = "Belum ada berita untuk kategori ini"
+                )
+            }
+            else -> NewsSections(
+                uiState = uiState,
+                onNewsClick = onNewsClick
+            )
         }
+    }
+}
 
-        uiState.popularNews?.let { popular ->
-            item {
-                SectionHeader(
-                    "Popular Now",
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-            }
-            item {
-                PopularNewsCard(
-                    news = popular,
-                    onClick = { onNewsClick(popular.link) },
-                    onShareClick = { },
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-            }
+private fun LazyListScope.StatePlaceholder(content: @Composable () -> Unit) {
+    item {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillParentMaxHeight(0.7f),
+            contentAlignment = Alignment.Center
+        ) {
+            content()
         }
+    }
+}
 
-        if (uiState.trendingNews.isNotEmpty()) {
-            item {
-                SectionHeader(
-                    "Trending Now",
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-            }
-            items(uiState.trendingNews, key = { it.link }) { news ->
-                TrendingNewsItem(
+private fun LazyListScope.NewsSections(
+    uiState: HomeUiState,
+    onNewsClick: (String) -> Unit
+) {
+    item {
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(uiState.headlineNews, key = { it.link }) { news ->
+                HeadlineCard(
                     news = news,
-                    onClick = { onNewsClick(news.link) },
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    onClick = { onNewsClick(news.link) }
                 )
             }
+        }
+    }
+
+    uiState.popularNews?.let { popular ->
+        item {
+            SectionHeader(
+                "Popular Now",
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+        }
+        item {
+            PopularNewsCard(
+                news = popular,
+                onClick = { onNewsClick(popular.link) },
+                onShareClick = { },
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+        }
+    }
+
+    if (uiState.trendingNews.isNotEmpty()) {
+        item {
+            SectionHeader(
+                "Trending Now",
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+        }
+        items(uiState.trendingNews, key = { it.link }) { news ->
+            TrendingNewsItem(
+                news = news,
+                onClick = { onNewsClick(news.link) },
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.rhesdev.warta.feature.detail.presentation.detail
+package com.rhesdev.warta.feature.news.presentation.detail
 
 import android.content.Intent
 import android.net.Uri
@@ -132,7 +132,6 @@ private fun NewsDetailContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(250.dp)
-                .clip(RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
         )
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
