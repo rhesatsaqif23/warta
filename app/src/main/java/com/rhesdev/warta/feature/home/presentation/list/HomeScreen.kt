@@ -17,6 +17,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.rhesdev.warta.core.presentation.components.EmptyState
 import com.rhesdev.warta.core.presentation.components.ErrorState
 import com.rhesdev.warta.core.presentation.components.HeadlineCard
+import com.rhesdev.warta.core.presentation.components.HomeTopBar
 import com.rhesdev.warta.core.presentation.components.LoadingScreen
 import com.rhesdev.warta.core.presentation.components.PopularNewsCard
 import com.rhesdev.warta.core.presentation.components.SectionHeader
@@ -26,6 +27,7 @@ import com.rhesdev.warta.feature.home.presentation.list.components.HomeCategoryR
 import com.rhesdev.warta.feature.home.presentation.list.components.homeCategories
 import com.rhesdev.warta.feature.news.domain.model.News
 
+// Home screen wiring state to content plus previews.
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
@@ -92,6 +94,10 @@ private fun NewsListContent(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
+            HomeTopBar(onSearchClick = onSearchClick)
+        }
+
+        item {
             HomeCategoryRow(
                 categories = homeCategories,
                 selectedCategory = uiState.selectedCategory,
@@ -107,7 +113,7 @@ private fun NewsListContent(
                 items(uiState.headlineNews, key = { it.link }) { news ->
                     HeadlineCard(
                         news = news,
-                        onReadClick = { onNewsClick(news.link) }
+                        onClick = { onNewsClick(news.link) }
                     )
                 }
             }

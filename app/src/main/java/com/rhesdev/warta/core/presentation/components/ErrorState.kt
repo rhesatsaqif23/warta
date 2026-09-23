@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
 
-/** Shared full-screen error state with retry action. */
+// Shared full-screen error state with retry action.
 @Composable
 fun ErrorState(
     title: String,

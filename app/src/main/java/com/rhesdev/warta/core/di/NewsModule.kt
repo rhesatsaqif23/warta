@@ -19,7 +19,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-/** Hilt module for news feature dependencies. */
+// Hilt module for news feature dependencies.
 @Module
 @InstallIn(SingletonComponent::class)
 object NewsModule {

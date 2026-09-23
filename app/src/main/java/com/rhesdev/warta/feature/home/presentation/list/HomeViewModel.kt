@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+// Home state holder observing Room once and refreshing from the API.
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getTopNewsUseCase: GetTopNewsUseCase,

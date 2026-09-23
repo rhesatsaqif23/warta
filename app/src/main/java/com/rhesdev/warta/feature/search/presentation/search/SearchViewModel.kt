@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+// Search state holder with debounced API-backed queries.
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val searchNewsUseCase: SearchNewsUseCase,

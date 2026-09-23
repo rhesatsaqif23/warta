@@ -19,13 +19,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rhesdev.warta.feature.news.domain.model.News
-import com.rhesdev.warta.core.presentation.theme.PrimaryGradient
 
-/** Large headline card with gradient scrim and "Baca" pill button. */
+// Large clickable headline card with gradient scrim.
 @Composable
 fun HeadlineCard(
     news: News,
-    onReadClick: () -> Unit,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -33,6 +32,7 @@ fun HeadlineCard(
             .width(320.dp)
             .height(180.dp)
             .clip(RoundedCornerShape(16.dp))
+            .clickable(onClick = onClick)
     ) {
         NewsImage(
             imageUrl = news.imageUrl,
@@ -54,18 +54,6 @@ fun HeadlineCard(
                 .align(Alignment.BottomStart)
                 .padding(16.dp)
         )
-        Text(
-            text = "Baca",
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onPrimary,
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(PrimaryGradient)
-                .clickable(onClick = onReadClick)
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-        )
     }
 }
 
@@ -82,6 +70,6 @@ private fun HeadlineCardPreview() {
             source = "CNN",
             category = "ekonomi"
         ),
-        onReadClick = {}
+        onClick = {}
     )
 }

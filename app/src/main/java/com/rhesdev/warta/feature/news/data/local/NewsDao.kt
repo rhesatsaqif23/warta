@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
-/** Data access object for news table operations. */
+// Room DAO for cached news.
 @Dao
 interface NewsDao {
 

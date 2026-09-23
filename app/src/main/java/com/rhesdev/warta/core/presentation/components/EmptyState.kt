@@ -20,7 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
 
-/** Shared full-screen empty state. */
+// Shared full-screen empty state.
 @Composable
 fun EmptyState(
     title: String,

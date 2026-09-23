@@ -23,7 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rhesdev.warta.feature.news.domain.model.News
 
-/** Horizontal row card for trending news items. */
+// Horizontal trending news row.
 @Composable
 fun TrendingNewsItem(
     news: News,

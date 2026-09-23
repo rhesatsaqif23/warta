@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 
-/** Warta brand logo with text, loaded from assets/img_logo_with_text.png. */
+// Warta logo with text from assets.
 @Composable
 fun WartaFullLogo(
     modifier: Modifier = Modifier,

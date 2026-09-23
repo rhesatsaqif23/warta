@@ -1,17 +1,31 @@
 package com.rhesdev.warta.core.presentation.components
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.GridView
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
-import com.rhesdev.warta.core.presentation.theme.Primary
+import androidx.compose.ui.unit.dp
+import com.rhesdev.warta.core.presentation.theme.WartaTheme
 
 data class BottomNavItem(
     val route: String,
@@ -25,25 +39,56 @@ val bottomNavItems = listOf(
     BottomNavItem("profile", Icons.Outlined.Person, "Profil")
 )
 
-/** Bottom navigation bar with Home, Kategori, Profil icons. */
+// Compact bottom bar with equal click areas.
 @Composable
 fun WartaBottomNavigationBar(
     currentRoute: String?,
-    onItemClick: (String) -> Unit
+    onItemClick: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    NavigationBar {
-        bottomNavItems.forEach { item ->
-            NavigationBarItem(
-                selected = currentRoute == item.route,
-                onClick = { onItemClick(item.route) },
-                icon = { Icon(item.icon, contentDescription = item.label) },
-                label = null,
-                alwaysShowLabel = false,
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Primary,
-                    unselectedIconColor = Primary
-                )
-            )
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surface)
+    ) {
+        HorizontalDivider(
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(64.dp)
+                .navigationBarsPadding(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            bottomNavItems.forEach { item ->
+                val selected = currentRoute == item.route
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .clickable(onClick = { onItemClick(item.route) }),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(16.dp))
+                            .then(
+                                if (selected) Modifier.background(
+                                    MaterialTheme.colorScheme.primaryContainer
+                                ) else Modifier
+                            )
+                            .padding(horizontal = 20.dp, vertical = 6.dp)
+                    ) {
+                        Icon(
+                            imageVector = item.icon,
+                            contentDescription = item.label,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+            }
         }
     }
 }
@@ -51,5 +96,7 @@ fun WartaBottomNavigationBar(
 @Preview(showBackground = true)
 @Composable
 private fun WartaBottomNavigationBarPreview() {
-    WartaBottomNavigationBar(currentRoute = "home", onItemClick = {})
+    WartaTheme {
+        WartaBottomNavigationBar(currentRoute = "home", onItemClick = {})
+    }
 }

@@ -4,7 +4,7 @@ import com.rhesdev.warta.feature.news.data.remote.dto.NewsResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-/** Retrofit interface for freenewsapi.ai endpoints. */
+// News API endpoints.
 interface NewsApi {
 
     @GET("search")

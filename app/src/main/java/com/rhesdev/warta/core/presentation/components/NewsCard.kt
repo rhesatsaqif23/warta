@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rhesdev.warta.feature.news.domain.model.News
 
-/** Generic news row item with thumbnail + title + source. */
+// Generic news row with thumbnail, title, and source.
 @Composable
 fun NewsCard(
     news: News,

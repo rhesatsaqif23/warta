@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -38,6 +39,7 @@ import com.rhesdev.warta.core.presentation.components.NewsImage
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
 import com.rhesdev.warta.feature.news.domain.model.News
 
+// Detail screen showing one article with share and open-in-browser actions.
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(
@@ -48,8 +50,10 @@ fun DetailScreen(
     val context = LocalContext.current
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
+                windowInsets = WindowInsets(0, 0, 0, 0),
                 title = { Text("Detail Berita") },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {

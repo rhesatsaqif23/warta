@@ -2,6 +2,7 @@ package com.rhesdev.warta.feature.home.presentation.list
 
 import com.rhesdev.warta.feature.news.domain.model.News
 
+// Home UI state with derived image-filtered sections.
 data class HomeUiState(
     val allNews: List<News> = emptyList(),
     val selectedCategory: String? = null,

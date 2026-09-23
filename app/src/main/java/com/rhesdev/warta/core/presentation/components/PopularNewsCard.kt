@@ -24,7 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rhesdev.warta.feature.news.domain.model.News
 
-/** Popular news card with image, title, date, and share/more actions. */
+// Popular news card with image, title, and actions.
 @Composable
 fun PopularNewsCard(
     news: News,

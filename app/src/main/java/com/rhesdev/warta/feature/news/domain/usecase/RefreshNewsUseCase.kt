@@ -3,7 +3,7 @@ package com.rhesdev.warta.feature.news.domain.usecase
 import com.rhesdev.warta.feature.news.domain.repository.NewsRepository
 import javax.inject.Inject
 
-/** Use case to refresh news from API and store in database. */
+// Refresh cached news from the API.
 class RefreshNewsUseCase @Inject constructor(
     private val repository: NewsRepository
 ) {

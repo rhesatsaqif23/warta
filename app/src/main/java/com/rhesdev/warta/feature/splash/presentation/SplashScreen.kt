@@ -21,6 +21,7 @@ import com.rhesdev.warta.core.presentation.components.WartaFullLogo
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
 import kotlinx.coroutines.delay
 
+// Splash screen with fade-in logo and timed navigation.
 @Composable
 fun SplashScreen(onNavigateToHome: () -> Unit) {
     var startAnimation by remember { mutableStateOf(false) }

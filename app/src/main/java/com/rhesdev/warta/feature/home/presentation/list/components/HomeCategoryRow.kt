@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.rhesdev.warta.core.presentation.components.CategoryChip
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
 
-/** Category filter model. `key = null` means "all categories". */
+// Home category filter model and chips row.
 data class HomeCategory(val key: String?, val label: String)
 
 val homeCategories = listOf(
@@ -25,7 +25,6 @@ val homeCategories = listOf(
     HomeCategory("health", "Kesehatan")
 )
 
-/** Horizontal category filter row, local to the Home feature. */
 @Composable
 fun HomeCategoryRow(
     categories: List<HomeCategory>,

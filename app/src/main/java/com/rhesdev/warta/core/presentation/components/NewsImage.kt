@@ -20,11 +20,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
 
-/**
- * News image with branded placeholder.
- * Shows a fallback when the URL is blank or the load fails,
- * so cards never render an empty/white box.
- */
+// News image with placeholder fallback for blank or failed loads.
 @Composable
 fun NewsImage(
     imageUrl: String,

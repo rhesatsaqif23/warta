@@ -4,7 +4,7 @@ import com.rhesdev.warta.feature.news.data.local.NewsEntity
 import com.rhesdev.warta.feature.news.data.remote.dto.NewsDto
 import com.rhesdev.warta.feature.news.domain.model.News
 
-/** Convert API DTO to Room Entity. Handles nullable fields. */
+// Maps API DTOs and Room entities to domain models.
 fun NewsDto.toEntity(): NewsEntity {
     return NewsEntity(
         link = url ?: "",
@@ -17,7 +17,6 @@ fun NewsDto.toEntity(): NewsEntity {
     )
 }
 
-/** Convert Room Entity to Domain Model. */
 fun NewsEntity.toDomain(): News {
     return News(
         link = link,

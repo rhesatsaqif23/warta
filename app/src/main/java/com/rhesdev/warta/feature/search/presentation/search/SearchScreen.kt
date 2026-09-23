@@ -1,6 +1,7 @@
 package com.rhesdev.warta.feature.search.presentation.search
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -34,6 +35,7 @@ import com.rhesdev.warta.core.presentation.components.NewsCard
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
 import com.rhesdev.warta.feature.news.domain.model.News
 
+// Search screen with autofocus field and debounced results.
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
@@ -49,8 +51,10 @@ fun SearchScreen(
     }
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
+                windowInsets = WindowInsets(0, 0, 0, 0),
                 title = {
                     OutlinedTextField(
                         value = uiState.query,

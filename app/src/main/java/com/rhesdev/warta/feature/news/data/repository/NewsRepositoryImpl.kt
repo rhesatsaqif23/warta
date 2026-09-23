@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-/** Implementation of NewsRepository. Handles API + Room data access. */
+// Room + API repository implementing the domain contract.
 class NewsRepositoryImpl @Inject constructor(
     private val api: NewsApi,
     private val dao: NewsDao
@@ -41,9 +41,7 @@ class NewsRepositoryImpl @Inject constructor(
             try {
                 val response = api.getNews()
                 dao.insertAll(response.results.map { it.toEntity() })
-            } catch (e: Exception) {
-                // Room cache remains as fallback
-            }
+            } catch (_: Exception) { }
         }
     }
 
@@ -52,9 +50,7 @@ class NewsRepositoryImpl @Inject constructor(
             try {
                 val response = api.searchNews(query)
                 dao.insertAll(response.results.map { it.toEntity() })
-            } catch (e: Exception) {
-                // Room cache remains as fallback
-            }
+            } catch (_: Exception) { }
         }
     }
 }
