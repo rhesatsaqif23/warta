@@ -15,30 +15,44 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
 
-// Shared full-screen empty state.
+// Shared full-screen empty state with optional illustration.
 @Composable
 fun EmptyState(
     title: String,
     message: String,
     modifier: Modifier = Modifier,
-    icon: ImageVector = Icons.Outlined.Inbox
+    icon: ImageVector = Icons.Outlined.Inbox,
+    illustrationModel: Any? = null,
+    illustrationSize: Dp = 160.dp
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            modifier = Modifier.size(80.dp),
-            tint = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        if (illustrationModel != null) {
+            AsyncImage(
+                model = illustrationModel,
+                contentDescription = null,
+                contentScale = ContentScale.Fit,
+                modifier = Modifier.size(illustrationSize)
+            )
+        } else {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                modifier = Modifier.size(80.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
         Spacer(modifier = Modifier.height(32.dp))
         Text(
             text = title,

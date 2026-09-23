@@ -28,10 +28,10 @@ fun HomeTopBar(
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        WartaFullLogo(width = 112.dp)
+        WartaFullLogo(width = 80.dp)
         SearchField(
             onClick = onSearchClick,
-            modifier = Modifier.weight(1f).padding(horizontal = 12.dp)
+            modifier = Modifier.weight(1f).padding(horizontal = 4.dp)
         )
         IconButton(onClick = onMenuClick) {
             Icon(

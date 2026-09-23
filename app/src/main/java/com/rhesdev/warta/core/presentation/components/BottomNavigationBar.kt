@@ -5,9 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -58,7 +56,6 @@ fun WartaBottomNavigationBar(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(64.dp)
                 .navigationBarsPadding(),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -67,19 +64,19 @@ fun WartaBottomNavigationBar(
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .fillMaxHeight()
-                        .clickable(onClick = { onItemClick(item.route) }),
+                        .clickable(onClick = { onItemClick(item.route) })
+                        .padding(vertical = 4.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Box(
                         modifier = Modifier
-                            .clip(RoundedCornerShape(16.dp))
+                            .clip(RoundedCornerShape(40.dp))
                             .then(
                                 if (selected) Modifier.background(
                                     MaterialTheme.colorScheme.primaryContainer
                                 ) else Modifier
                             )
-                            .padding(horizontal = 20.dp, vertical = 6.dp)
+                            .padding(12.dp)
                     ) {
                         Icon(
                             imageVector = item.icon,

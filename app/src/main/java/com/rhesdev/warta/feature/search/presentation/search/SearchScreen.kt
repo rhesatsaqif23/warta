@@ -9,14 +9,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,6 +24,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.rhesdev.warta.core.presentation.components.EditableSearchField
 import com.rhesdev.warta.core.presentation.components.EmptyState
 import com.rhesdev.warta.core.presentation.components.ErrorState
 import com.rhesdev.warta.core.presentation.components.LoadingScreen
@@ -56,21 +53,14 @@ fun SearchScreen(
             TopAppBar(
                 windowInsets = WindowInsets(0, 0, 0, 0),
                 title = {
-                    OutlinedTextField(
+                    EditableSearchField(
                         value = uiState.query,
                         onValueChange = { viewModel.onEvent(SearchUiEvent.OnQueryChanged(it)) },
-                        placeholder = { Text("Cari berita...") },
-                        singleLine = true,
+                        onClearClick = { viewModel.onEvent(SearchUiEvent.OnClearQuery) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .focusRequester(focusRequester),
-                        trailingIcon = {
-                            if (uiState.query.isNotEmpty()) {
-                                IconButton(onClick = { viewModel.onEvent(SearchUiEvent.OnClearQuery) }) {
-                                    Icon(Icons.Default.Clear, contentDescription = "Hapus")
-                                }
-                            }
-                        }
+                        focusRequester = focusRequester
                     )
                 },
                 navigationIcon = {
@@ -113,7 +103,7 @@ fun SearchContent(
                 EmptyState(
                     title = "Tidak ada hasil",
                     message = "Tidak ada hasil untuk \"${uiState.query}\"",
-                    icon = Icons.Outlined.Search
+                    illustrationModel = "file:///android_asset/img_search_empty.png"
                 )
             }
             else -> {
