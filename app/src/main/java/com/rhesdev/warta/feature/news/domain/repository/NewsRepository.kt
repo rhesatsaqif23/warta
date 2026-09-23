@@ -8,8 +8,6 @@ interface NewsRepository {
 
     fun getTopNews(): Flow<List<News>>
 
-    fun getNewsByCategory(category: String): Flow<List<News>>
-
     fun searchNews(query: String): Flow<List<News>>
 
     suspend fun getNewsByLink(link: String): News?

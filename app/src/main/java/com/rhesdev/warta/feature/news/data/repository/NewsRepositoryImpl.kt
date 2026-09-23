@@ -24,12 +24,6 @@ class NewsRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getNewsByCategory(category: String): Flow<List<News>> {
-        return dao.getNewsByCategory(category).map { entities ->
-            entities.map { it.toDomain() }
-        }
-    }
-
     override fun searchNews(query: String): Flow<List<News>> {
         return dao.searchNews(query).map { entities ->
             entities.map { it.toDomain() }

@@ -13,9 +13,6 @@ interface NewsDao {
     @Query("SELECT * FROM news_table ORDER BY isoDate DESC")
     fun getAllNews(): Flow<List<NewsEntity>>
 
-    @Query("SELECT * FROM news_table WHERE category = :category ORDER BY isoDate DESC")
-    fun getNewsByCategory(category: String): Flow<List<NewsEntity>>
-
     @Query("SELECT * FROM news_table WHERE title LIKE '%' || :query || '%' ORDER BY isoDate DESC")
     fun searchNews(query: String): Flow<List<NewsEntity>>
 
@@ -24,7 +21,4 @@ interface NewsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(news: List<NewsEntity>)
-
-    @Query("DELETE FROM news_table WHERE category = :category")
-    suspend fun deleteByCategory(category: String)
 }
