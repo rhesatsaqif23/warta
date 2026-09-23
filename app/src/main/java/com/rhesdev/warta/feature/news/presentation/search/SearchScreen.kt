@@ -28,7 +28,7 @@ import com.rhesdev.warta.core.presentation.components.EditableSearchField
 import com.rhesdev.warta.core.presentation.components.EmptyState
 import com.rhesdev.warta.core.presentation.components.ErrorState
 import com.rhesdev.warta.core.presentation.components.LoadingScreen
-import com.rhesdev.warta.core.presentation.components.NewsCard
+import com.rhesdev.warta.feature.news.presentation.components.NewsCard
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
 import com.rhesdev.warta.feature.news.domain.model.News
 

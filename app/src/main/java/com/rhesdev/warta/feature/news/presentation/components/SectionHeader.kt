@@ -1,4 +1,4 @@
-package com.rhesdev.warta.core.presentation.components
+package com.rhesdev.warta.feature.news.presentation.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer

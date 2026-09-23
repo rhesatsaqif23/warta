@@ -1,4 +1,4 @@
-package com.rhesdev.warta.core.presentation.components
+package com.rhesdev.warta.feature.news.presentation.home.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,6 +13,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.rhesdev.warta.core.presentation.components.SearchField
+import com.rhesdev.warta.core.presentation.components.WartaFullLogo
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
 
 // Home header with logo, search field, and menu.

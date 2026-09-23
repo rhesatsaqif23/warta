@@ -20,12 +20,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rhesdev.warta.core.presentation.components.EmptyState
 import com.rhesdev.warta.core.presentation.components.ErrorState
-import com.rhesdev.warta.core.presentation.components.HeadlineCard
-import com.rhesdev.warta.core.presentation.components.HomeTopBar
 import com.rhesdev.warta.core.presentation.components.LoadingScreen
-import com.rhesdev.warta.core.presentation.components.PopularNewsCard
-import com.rhesdev.warta.core.presentation.components.SectionHeader
-import com.rhesdev.warta.core.presentation.components.TrendingNewsItem
+import com.rhesdev.warta.feature.news.presentation.components.HeadlineCard
+import com.rhesdev.warta.feature.news.presentation.components.PopularNewsCard
+import com.rhesdev.warta.feature.news.presentation.components.SectionHeader
+import com.rhesdev.warta.feature.news.presentation.components.TrendingNewsItem
+import com.rhesdev.warta.feature.news.presentation.home.components.HomeTopBar
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
 import com.rhesdev.warta.feature.news.presentation.home.components.HomeCategoryRow
 import com.rhesdev.warta.feature.news.presentation.home.components.homeCategories
