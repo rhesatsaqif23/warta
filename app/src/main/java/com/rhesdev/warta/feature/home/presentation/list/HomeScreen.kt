@@ -1,40 +1,29 @@
 package com.rhesdev.warta.feature.home.presentation.list
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.CloudOff
-import androidx.compose.material.icons.outlined.Inbox
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.rhesdev.warta.core.presentation.components.CategoryChip
+import com.rhesdev.warta.core.presentation.components.EmptyState
+import com.rhesdev.warta.core.presentation.components.ErrorState
 import com.rhesdev.warta.core.presentation.components.HeadlineCard
 import com.rhesdev.warta.core.presentation.components.LoadingScreen
 import com.rhesdev.warta.core.presentation.components.PopularNewsCard
 import com.rhesdev.warta.core.presentation.components.SectionHeader
 import com.rhesdev.warta.core.presentation.components.TrendingNewsItem
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
+import com.rhesdev.warta.feature.home.presentation.list.components.HomeCategoryRow
+import com.rhesdev.warta.feature.home.presentation.list.components.homeCategories
 import com.rhesdev.warta.feature.news.domain.model.News
 
 @Composable
@@ -47,40 +36,43 @@ fun HomeScreen(
 
     HomeContent(
         uiState = uiState,
+        onEvent = viewModel::onEvent,
         onNewsClick = onNewsClick,
-        onSearchClick = onSearchClick,
-        onCategoryClick = { viewModel.loadNews(if (it == uiState.selectedCategory) null else it) },
-        onRetry = { viewModel.loadNews() }
+        onSearchClick = onSearchClick
     )
 }
 
 @Composable
 fun HomeContent(
     uiState: HomeUiState,
+    onEvent: (HomeUiEvent) -> Unit,
     onNewsClick: (String) -> Unit,
     onSearchClick: () -> Unit,
-    onCategoryClick: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    onRetry: () -> Unit = {}
+    modifier: Modifier = Modifier
 ) {
     when {
         uiState.isLoading -> LoadingScreen(modifier = modifier)
         uiState.error != null && uiState.filteredNews.isEmpty() -> {
-            ErrorContent(
+            ErrorState(
+                title = "Gagal memuat berita",
                 message = uiState.error ?: "Terjadi kesalahan",
-                onRetry = onRetry,
+                onRetry = { onEvent(HomeUiEvent.OnRetry) },
                 modifier = modifier
             )
         }
         uiState.filteredNews.isEmpty() -> {
-            EmptyContent(modifier = modifier)
+            EmptyState(
+                title = "Tidak ada berita",
+                message = "Belum ada berita untuk kategori ini",
+                modifier = modifier
+            )
         }
         else -> {
             NewsListContent(
                 uiState = uiState,
+                onEvent = onEvent,
                 onNewsClick = onNewsClick,
                 onSearchClick = onSearchClick,
-                onCategoryClick = onCategoryClick,
                 modifier = modifier
             )
         }
@@ -88,89 +80,11 @@ fun HomeContent(
 }
 
 @Composable
-private fun ErrorContent(
-    message: String,
-    onRetry: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Icon(
-            imageVector = Icons.Outlined.CloudOff,
-            contentDescription = null,
-            modifier = Modifier.size(64.dp),
-            tint = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "Gagal memuat berita",
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = message,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = 32.dp)
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onRetry) {
-            Text(text = "Coba Lagi")
-        }
-    }
-}
-
-@Composable
-private fun EmptyContent(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Icon(
-            imageVector = Icons.Outlined.Inbox,
-            contentDescription = null,
-            modifier = Modifier.size(64.dp),
-            tint = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "Tidak ada berita",
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "Belum ada berita untuk kategori ini",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center
-        )
-    }
-}
-
-private val categories = listOf(
-    "all" to "Semua",
-    "society" to "Nasional",
-    "technology" to "Teknologi",
-    "economy" to "Ekonomi",
-    "sports" to "Olahraga",
-    "entertainment" to "Hiburan",
-    "politics" to "Politik",
-    "health" to "Kesehatan"
-)
-
-@Composable
 private fun NewsListContent(
     uiState: HomeUiState,
+    onEvent: (HomeUiEvent) -> Unit,
     onNewsClick: (String) -> Unit,
     onSearchClick: () -> Unit,
-    onCategoryClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -178,21 +92,11 @@ private fun NewsListContent(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
-            LazyRow(
-                contentPadding = PaddingValues(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                items(categories) { (key, label) ->
-                    CategoryChip(
-                        label = label,
-                        selected = if (key == "all") uiState.selectedCategory == null else uiState.selectedCategory == key,
-                        onClick = {
-                            val category = if (key == "all") null else key
-                            onCategoryClick(category ?: key)
-                        }
-                    )
-                }
-            }
+            HomeCategoryRow(
+                categories = homeCategories,
+                selectedCategory = uiState.selectedCategory,
+                onCategorySelected = { onEvent(HomeUiEvent.OnCategorySelected(it)) }
+            )
         }
 
         item {
@@ -200,7 +104,7 @@ private fun NewsListContent(
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(uiState.headlineNews) { news ->
+                items(uiState.headlineNews, key = { it.link }) { news ->
                     HeadlineCard(
                         news = news,
                         onReadClick = { onNewsClick(news.link) }
@@ -233,7 +137,7 @@ private fun NewsListContent(
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
             }
-            items(uiState.trendingNews) { news ->
+            items(uiState.trendingNews, key = { it.link }) { news ->
                 TrendingNewsItem(
                     news = news,
                     onClick = { onNewsClick(news.link) },
@@ -252,7 +156,7 @@ private val sampleNews = listOf(
         isoDate = "2 jam lalu",
         imageUrl = "",
         source = "CNN",
-        category = "nasional"
+        category = "society"
     ),
     News(
         link = "https://example.com/2",
@@ -261,7 +165,7 @@ private val sampleNews = listOf(
         isoDate = "3 jam lalu",
         imageUrl = "",
         source = "Tribun",
-        category = "olahraga"
+        category = "sports"
     ),
     News(
         link = "https://example.com/3",
@@ -270,7 +174,7 @@ private val sampleNews = listOf(
         isoDate = "4 jam lalu",
         imageUrl = "",
         source = "Detik",
-        category = "teknologi"
+        category = "technology"
     ),
     News(
         link = "https://example.com/4",
@@ -279,7 +183,7 @@ private val sampleNews = listOf(
         isoDate = "5 jam lalu",
         imageUrl = "",
         source = "Kompas",
-        category = "seni"
+        category = "entertainment"
     ),
     News(
         link = "https://example.com/5",
@@ -288,7 +192,7 @@ private val sampleNews = listOf(
         isoDate = "6 jam lalu",
         imageUrl = "",
         source = "Health",
-        category = "kesehatan"
+        category = "health"
     )
 )
 
@@ -302,9 +206,9 @@ private fun HomeContentPreview() {
                 selectedCategory = null,
                 isLoading = false
             ),
+            onEvent = {},
             onNewsClick = {},
-            onSearchClick = {},
-            onCategoryClick = {}
+            onSearchClick = {}
         )
     }
 }
@@ -315,9 +219,9 @@ private fun HomeContentLoadingPreview() {
     WartaTheme {
         HomeContent(
             uiState = HomeUiState(isLoading = true),
+            onEvent = {},
             onNewsClick = {},
-            onSearchClick = {},
-            onCategoryClick = {}
+            onSearchClick = {}
         )
     }
 }
@@ -328,10 +232,9 @@ private fun HomeContentErrorPreview() {
     WartaTheme {
         HomeContent(
             uiState = HomeUiState(error = "Gagal memuat berita"),
+            onEvent = {},
             onNewsClick = {},
-            onSearchClick = {},
-            onCategoryClick = {},
-            onRetry = {}
+            onSearchClick = {}
         )
     }
 }
@@ -342,9 +245,9 @@ private fun HomeContentEmptyPreview() {
     WartaTheme {
         HomeContent(
             uiState = HomeUiState(isLoading = false),
+            onEvent = {},
             onNewsClick = {},
-            onSearchClick = {},
-            onCategoryClick = {}
+            onSearchClick = {}
         )
     }
 }

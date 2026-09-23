@@ -17,7 +17,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
+import com.rhesdev.warta.core.presentation.theme.WartaTheme
 import kotlinx.coroutines.delay
 
 @Composable
@@ -35,8 +37,16 @@ fun SplashScreen(onNavigateToHome: () -> Unit) {
         onNavigateToHome()
     }
 
+    SplashContent(alpha = alpha)
+}
+
+@Composable
+fun SplashContent(
+    alpha: Float,
+    modifier: Modifier = Modifier
+) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         verticalArrangement = Arrangement.Center,
@@ -48,5 +58,13 @@ fun SplashScreen(onNavigateToHome: () -> Unit) {
             contentScale = ContentScale.Fit,
             modifier = Modifier.alpha(alpha)
         )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SplashContentPreview() {
+    WartaTheme {
+        SplashContent(alpha = 1f)
     }
 }

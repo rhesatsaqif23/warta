@@ -1,10 +1,9 @@
 package com.rhesdev.warta.feature.search.presentation.search
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rhesdev.warta.feature.news.domain.usecase.SearchAndRefreshUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.SearchNewsUseCase
-import com.rhesdev.warta.feature.news.domain.repository.NewsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -16,12 +15,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private const val TAG = "SearchViewModel"
-
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val searchNewsUseCase: SearchNewsUseCase,
-    private val repository: NewsRepository
+    private val searchAndRefreshUseCase: SearchAndRefreshUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SearchUiState())
@@ -29,30 +26,35 @@ class SearchViewModel @Inject constructor(
 
     private var searchJob: Job? = null
 
-    fun onQueryChange(query: String) {
-        _uiState.update { it.copy(query = query) }
+    fun onEvent(event: SearchUiEvent) {
+        when (event) {
+            is SearchUiEvent.OnQueryChanged -> submitQuery(event.query)
+            SearchUiEvent.OnClearQuery -> submitQuery("")
+        }
+    }
+
+    private fun submitQuery(query: String) {
+        _uiState.update { it.copy(query = query, error = null) }
         searchJob?.cancel()
-        if (query.isNotBlank()) {
-            searchJob = viewModelScope.launch {
-                delay(300)
-                _uiState.update { it.copy(isLoading = true) }
-                try {
-                    Log.d(TAG, "Searching API for: $query")
-                    repository.searchAndRefresh(query)
-                } catch (e: Exception) {
-                    Log.e(TAG, "API search failed", e)
-                }
-                searchNewsUseCase(query)
-                    .catch { e ->
-                        _uiState.update { it.copy(error = e.message, isLoading = false) }
-                    }
-                    .collect { results ->
-                        Log.d(TAG, "Search returned ${results.size} results")
-                        _uiState.update { it.copy(results = results, isLoading = false) }
-                    }
-            }
-        } else {
+        if (query.isBlank()) {
             _uiState.update { it.copy(results = emptyList(), isLoading = false) }
+            return
+        }
+        searchJob = viewModelScope.launch {
+            delay(300)
+            _uiState.update { it.copy(isLoading = true) }
+            try {
+                searchAndRefreshUseCase(query)
+            } catch (e: Exception) {
+                _uiState.update { it.copy(error = e.message) }
+            }
+            searchNewsUseCase(query)
+                .catch { e ->
+                    _uiState.update { it.copy(error = e.message, isLoading = false) }
+                }
+                .collect { results ->
+                    _uiState.update { it.copy(results = results, isLoading = false) }
+                }
         }
     }
 }

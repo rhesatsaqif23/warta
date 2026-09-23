@@ -27,9 +27,13 @@ class DetailViewModel @Inject constructor(
         loadNewsDetail()
     }
 
+    fun retry() {
+        loadNewsDetail()
+    }
+
     private fun loadNewsDetail() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
+            _uiState.update { it.copy(isLoading = true, error = null) }
             try {
                 val news = getNewsByLinkUseCase(newsLink)
                 _uiState.update { it.copy(news = news, isLoading = false) }

@@ -33,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.rhesdev.warta.core.presentation.components.ErrorState
 import com.rhesdev.warta.core.presentation.components.LoadingScreen
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
 import com.rhesdev.warta.feature.news.domain.model.News
@@ -73,6 +74,10 @@ fun DetailScreen(
     ) { paddingValues ->
         DetailContent(
             uiState = uiState,
+            onReadMore = { link ->
+                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
+            },
+            onRetry = { viewModel.retry() },
             modifier = Modifier.padding(paddingValues)
         )
     }
@@ -81,26 +86,24 @@ fun DetailScreen(
 @Composable
 fun DetailContent(
     uiState: DetailUiState,
+    onReadMore: (String) -> Unit,
+    onRetry: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
-
     when {
         uiState.isLoading -> LoadingScreen(modifier = modifier)
-        uiState.error != null -> {
-            Text(
-                text = uiState.error ?: "Terjadi kesalahan",
-                modifier = modifier.padding(16.dp),
-                color = MaterialTheme.colorScheme.error
+        uiState.error != null && uiState.news == null -> {
+            ErrorState(
+                title = "Gagal memuat berita",
+                message = uiState.error ?: "Terjadi kesalahan",
+                onRetry = onRetry,
+                modifier = modifier
             )
         }
         uiState.news != null -> {
             NewsDetailContent(
                 news = uiState.news,
-                onReadMore = { link ->
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
-                    context.startActivity(intent)
-                },
+                onReadMore = onReadMore,
                 modifier = modifier
             )
         }
@@ -164,7 +167,7 @@ private val sampleNews = News(
     isoDate = "2 jam lalu",
     imageUrl = "",
     source = "CNN",
-    category = "nasional"
+    category = "society"
 )
 
 @Preview(showBackground = true)
@@ -175,7 +178,9 @@ private fun DetailContentPreview() {
             uiState = DetailUiState(
                 news = sampleNews,
                 isLoading = false
-            )
+            ),
+            onReadMore = {},
+            onRetry = {}
         )
     }
 }
@@ -185,7 +190,9 @@ private fun DetailContentPreview() {
 private fun DetailContentLoadingPreview() {
     WartaTheme {
         DetailContent(
-            uiState = DetailUiState(isLoading = true)
+            uiState = DetailUiState(isLoading = true),
+            onReadMore = {},
+            onRetry = {}
         )
     }
 }
@@ -195,7 +202,9 @@ private fun DetailContentLoadingPreview() {
 private fun DetailContentErrorPreview() {
     WartaTheme {
         DetailContent(
-            uiState = DetailUiState(error = "Gagal memuat berita")
+            uiState = DetailUiState(error = "Gagal memuat berita"),
+            onReadMore = {},
+            onRetry = {}
         )
     }
 }

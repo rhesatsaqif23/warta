@@ -9,10 +9,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -26,8 +26,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.rhesdev.warta.core.presentation.components.EmptyState
+import com.rhesdev.warta.core.presentation.components.ErrorState
 import com.rhesdev.warta.core.presentation.components.LoadingScreen
 import com.rhesdev.warta.core.presentation.components.NewsCard
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
@@ -53,7 +54,7 @@ fun SearchScreen(
                 title = {
                     OutlinedTextField(
                         value = uiState.query,
-                        onValueChange = { viewModel.onQueryChange(it) },
+                        onValueChange = { viewModel.onEvent(SearchUiEvent.OnQueryChanged(it)) },
                         placeholder = { Text("Cari berita...") },
                         singleLine = true,
                         modifier = Modifier
@@ -61,7 +62,7 @@ fun SearchScreen(
                             .focusRequester(focusRequester),
                         trailingIcon = {
                             if (uiState.query.isNotEmpty()) {
-                                IconButton(onClick = { viewModel.onQueryChange("") }) {
+                                IconButton(onClick = { viewModel.onEvent(SearchUiEvent.OnClearQuery) }) {
                                     Icon(Icons.Default.Clear, contentDescription = "Hapus")
                                 }
                             }
@@ -78,6 +79,7 @@ fun SearchScreen(
     ) { paddingValues ->
         SearchContent(
             uiState = uiState,
+            onEvent = viewModel::onEvent,
             onNewsClick = onNewsClick,
             modifier = Modifier.padding(paddingValues)
         )
@@ -87,6 +89,7 @@ fun SearchScreen(
 @Composable
 fun SearchContent(
     uiState: SearchUiState,
+    onEvent: (SearchUiEvent) -> Unit,
     onNewsClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -95,22 +98,23 @@ fun SearchContent(
     ) {
         when {
             uiState.isLoading -> LoadingScreen()
-            uiState.error != null -> {
-                Text(
-                    text = uiState.error ?: "Terjadi kesalahan",
-                    modifier = Modifier.padding(16.dp),
-                    color = MaterialTheme.colorScheme.error
+            uiState.error != null && uiState.results.isEmpty() -> {
+                ErrorState(
+                    title = "Pencarian gagal",
+                    message = uiState.error ?: "Terjadi kesalahan",
+                    onRetry = { onEvent(SearchUiEvent.OnQueryChanged(uiState.query)) }
                 )
             }
             uiState.results.isEmpty() && uiState.query.isNotBlank() -> {
-                Text(
-                    text = "Tidak ada hasil untuk \"${uiState.query}\"",
-                    modifier = Modifier.padding(16.dp)
+                EmptyState(
+                    title = "Tidak ada hasil",
+                    message = "Tidak ada hasil untuk \"${uiState.query}\"",
+                    icon = Icons.Outlined.Search
                 )
             }
             else -> {
                 LazyColumn {
-                    items(uiState.results) { news ->
+                    items(uiState.results, key = { it.link }) { news ->
                         NewsCard(
                             news = news,
                             onClick = { onNewsClick(news.link) }
@@ -130,7 +134,7 @@ private val sampleResults = listOf(
         isoDate = "2 jam lalu",
         imageUrl = "",
         source = "CNN",
-        category = "nasional"
+        category = "society"
     ),
     News(
         link = "https://example.com/2",
@@ -139,7 +143,7 @@ private val sampleResults = listOf(
         isoDate = "3 jam lalu",
         imageUrl = "",
         source = "Kompas",
-        category = "bisnis"
+        category = "economy"
     )
 )
 
@@ -153,6 +157,7 @@ private fun SearchContentPreview() {
                 results = sampleResults,
                 isLoading = false
             ),
+            onEvent = {},
             onNewsClick = {}
         )
     }
@@ -167,6 +172,7 @@ private fun SearchContentLoadingPreview() {
                 query = "ekonomi",
                 isLoading = true
             ),
+            onEvent = {},
             onNewsClick = {}
         )
     }
@@ -182,6 +188,7 @@ private fun SearchContentEmptyPreview() {
                 results = emptyList(),
                 isLoading = false
             ),
+            onEvent = {},
             onNewsClick = {}
         )
     }
@@ -196,6 +203,7 @@ private fun SearchContentErrorPreview() {
                 query = "ekonomi",
                 error = "Gagal mencari berita"
             ),
+            onEvent = {},
             onNewsClick = {}
         )
     }
