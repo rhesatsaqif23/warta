@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,7 +36,6 @@ import com.rhesdev.warta.core.presentation.components.EditableSearchField
 import com.rhesdev.warta.core.presentation.components.EmptyState
 import com.rhesdev.warta.core.presentation.components.ErrorState
 import com.rhesdev.warta.core.presentation.components.LoadingScreen
-import com.rhesdev.warta.core.presentation.components.WartaFullLogo
 import com.rhesdev.warta.core.presentation.theme.Primary
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
 import com.rhesdev.warta.feature.news.domain.model.News
@@ -47,6 +47,7 @@ import com.rhesdev.warta.feature.news.presentation.home.components.homeCategorie
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel = hiltViewModel(),
+    onBackClick: () -> Unit,
     onNewsClick: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -64,7 +65,13 @@ fun SearchScreen(
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                WartaFullLogo(width = 80.dp)
+                IconButton(onClick = onBackClick) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Kembali",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
                 EditableSearchField(
                     value = uiState.query,
                     onValueChange = { viewModel.onEvent(SearchUiEvent.OnQueryChanged(it)) },

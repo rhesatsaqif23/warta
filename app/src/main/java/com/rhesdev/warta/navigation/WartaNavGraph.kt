@@ -96,6 +96,7 @@ fun WartaNavGraph(
 
             composable(Routes.SEARCH) {
                 SearchScreen(
+                    onBackClick = { navController.popBackStack() },
                     onNewsClick = { link ->
                         val encodedLink = URLEncoder.encode(link, "UTF-8")
                         navController.navigate(Routes.detail(encodedLink))

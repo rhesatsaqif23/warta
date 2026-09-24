@@ -6,6 +6,7 @@ import com.rhesdev.warta.feature.news.domain.usecase.GetSearchStatsUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.SearchAndRefreshUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.SearchNewsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,11 +51,14 @@ class SearchViewModel @Inject constructor(
                 searchAndRefreshUseCase(query)
                 val stats = getSearchStatsUseCase(query)
                 _uiState.update { it.copy(totalResults = stats.total) }
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 _uiState.update { it.copy(error = e.message) }
             }
             searchNewsUseCase(query)
                 .catch { e ->
+                    if (e is CancellationException) throw e
                     _uiState.update { it.copy(error = e.message, isLoading = false) }
                 }
                 .collect { results ->
