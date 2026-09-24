@@ -41,7 +41,7 @@ fun WartaTopBar(
                 )
             }
         } else {
-            WartaFullLogo(width = 112.dp)
+            WartaFullLogo(width = 80.dp)
         }
         SearchField(
             onClick = onSearchClick,

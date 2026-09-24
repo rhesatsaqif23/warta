@@ -4,4 +4,5 @@ package com.rhesdev.warta.feature.news.presentation.category
 sealed interface CategoryUiEvent {
     data class OnToggleExpand(val key: String) : CategoryUiEvent
     data object OnRetry : CategoryUiEvent
+    data object OnRefresh : CategoryUiEvent
 }

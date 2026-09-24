@@ -1,7 +1,7 @@
 package com.rhesdev.warta.feature.news.presentation.category
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -10,9 +10,11 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.GridView
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -47,6 +49,7 @@ fun CategoryScreen(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryContent(
     uiState: CategoryUiState,
@@ -54,10 +57,15 @@ fun CategoryContent(
     onNewsClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+    PullToRefreshBox(
+        isRefreshing = uiState.isRefreshing,
+        onRefresh = { onEvent(CategoryUiEvent.OnRefresh) },
+        modifier = modifier.fillMaxSize()
     ) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(vertical = 16.dp)
+        ) {
         when {
             uiState.isLoading -> item {
                 Box(
@@ -102,6 +110,7 @@ fun CategoryContent(
                 onNewsClick = onNewsClick
             )
         }
+        }
     }
 }
 
@@ -110,19 +119,21 @@ private fun LazyListScope.CategorySections(
     onEvent: (CategoryUiEvent) -> Unit,
     onNewsClick: (String) -> Unit
 ) {
-    uiState.sections.forEach { section ->
+    uiState.sections.forEachIndexed { index, section ->
         item {
             SectionHeader(
                 title = section.label,
                 icon = Icons.Outlined.GridView,
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .padding(top = if (index == 0) 0.dp else 12.dp)
             )
         }
         items(section.articles, key = { it.link }) { news ->
             TrendingNewsItem(
                 news = news,
                 onClick = { onNewsClick(news.link) },
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
             )
         }
         if (!section.expanded && section.total > section.articles.size) {
@@ -130,7 +141,7 @@ private fun LazyListScope.CategorySections(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
+                        .padding(horizontal = 16.dp, vertical = 2.dp),
                     contentAlignment = Alignment.CenterEnd
                 ) {
                     TextButton(onClick = { onEvent(CategoryUiEvent.OnToggleExpand(section.key)) }) {

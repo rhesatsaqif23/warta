@@ -46,7 +46,8 @@ class CategoryViewModel @Inject constructor(
                     it.copy(expanded = expanded)
                 }
             }
-            CategoryUiEvent.OnRetry -> warmCache()
+            CategoryUiEvent.OnRetry -> warmCache(isInitial = true)
+            CategoryUiEvent.OnRefresh -> warmCache(isInitial = false)
         }
     }
 
@@ -62,10 +63,14 @@ class CategoryViewModel @Inject constructor(
         }
     }
 
-    private fun warmCache() {
+    private fun warmCache(isInitial: Boolean = true) {
         warmJob?.cancel()
         warmJob = viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, error = null) }
+            if (isInitial) {
+                _uiState.update { it.copy(isLoading = true, error = null) }
+            } else {
+                _uiState.update { it.copy(isRefreshing = true) }
+            }
             try {
                 refreshNewsUseCase()
                 homeCategories.forEach { cat ->
@@ -76,7 +81,7 @@ class CategoryViewModel @Inject constructor(
             } catch (e: Exception) {
                 _uiState.update { it.copy(error = e.message) }
             } finally {
-                _uiState.update { it.copy(isLoading = false) }
+                _uiState.update { it.copy(isLoading = false, isRefreshing = false) }
             }
         }
     }

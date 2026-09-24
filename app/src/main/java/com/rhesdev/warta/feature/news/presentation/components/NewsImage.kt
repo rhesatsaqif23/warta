@@ -8,19 +8,16 @@ import androidx.compose.material.icons.filled.BrokenImage
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
+import com.rhesdev.warta.core.presentation.components.ShimmerBox
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
 
-// News image with placeholder fallback for blank or failed loads.
+// News image with shimmer loading and placeholder fallback.
 @Composable
 fun NewsImage(
     imageUrl: String,
@@ -28,32 +25,34 @@ fun NewsImage(
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Crop
 ) {
-    var loadFailed by remember(imageUrl) { mutableStateOf(imageUrl.isBlank()) }
-
+    if (imageUrl.isBlank()) {
+        PlaceholderBox(modifier = modifier)
+        return
+    }
     Box(modifier = modifier) {
-        if (loadFailed) {
-            Box(
-                modifier = Modifier
-                    .matchParentSize()
-                    .background(MaterialTheme.colorScheme.surfaceVariant),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.BrokenImage,
-                    contentDescription = null,
-                    modifier = Modifier.size(32.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        } else {
-            AsyncImage(
-                model = imageUrl,
-                contentDescription = contentDescription,
-                contentScale = contentScale,
-                onError = { loadFailed = true },
-                modifier = Modifier.matchParentSize()
-            )
-        }
+        SubcomposeAsyncImage(
+            model = imageUrl,
+            contentDescription = contentDescription,
+            contentScale = contentScale,
+            modifier = Modifier.matchParentSize(),
+            loading = { ShimmerBox(modifier = Modifier.matchParentSize()) },
+            error = { PlaceholderBox(modifier = Modifier.matchParentSize()) }
+        )
+    }
+}
+
+@Composable
+private fun PlaceholderBox(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier.background(MaterialTheme.colorScheme.surfaceVariant),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            imageVector = Icons.Default.BrokenImage,
+            contentDescription = null,
+            modifier = Modifier.size(32.dp),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
 

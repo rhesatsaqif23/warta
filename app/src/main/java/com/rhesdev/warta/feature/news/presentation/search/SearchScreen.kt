@@ -124,7 +124,7 @@ fun SearchContent(
                     withStyle(SpanStyle(color = Primary)) { append(uiState.query) }
                     append("”")
                 },
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
             )
         }

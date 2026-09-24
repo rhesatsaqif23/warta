@@ -8,6 +8,7 @@ data class CategoryUiState(
     val allNews: List<News> = emptyList(),
     val expanded: Set<String> = emptySet(),
     val isLoading: Boolean = true,
+    val isRefreshing: Boolean = false,
     val error: String? = null
 ) {
     data class Section(
