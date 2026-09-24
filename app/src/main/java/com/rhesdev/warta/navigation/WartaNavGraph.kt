@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.GridView
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -21,6 +20,7 @@ import androidx.navigation.navArgument
 import com.rhesdev.warta.core.presentation.components.EmptyState
 import com.rhesdev.warta.core.presentation.components.WartaBottomNavigationBar
 import com.rhesdev.warta.core.presentation.components.WartaTopBar
+import com.rhesdev.warta.feature.news.presentation.category.CategoryScreen
 import com.rhesdev.warta.feature.news.presentation.detail.DetailScreen
 import com.rhesdev.warta.feature.news.presentation.home.HomeScreen
 import com.rhesdev.warta.feature.news.presentation.search.SearchScreen
@@ -96,7 +96,6 @@ fun WartaNavGraph(
 
             composable(Routes.SEARCH) {
                 SearchScreen(
-                    onBackClick = { navController.popBackStack() },
                     onNewsClick = { link ->
                         val encodedLink = URLEncoder.encode(link, "UTF-8")
                         navController.navigate(Routes.detail(encodedLink))
@@ -109,10 +108,11 @@ fun WartaNavGraph(
                     WartaTopBar(
                         onSearchClick = { navController.navigate(Routes.SEARCH) }
                     )
-                    EmptyState(
-                        title = "Kategori",
-                        message = "Halaman kategori segera hadir",
-                        icon = Icons.Outlined.GridView,
+                    CategoryScreen(
+                        onNewsClick = { link ->
+                            val encodedLink = URLEncoder.encode(link, "UTF-8")
+                            navController.navigate(Routes.detail(encodedLink))
+                        },
                         modifier = Modifier.weight(1f)
                     )
                 }
