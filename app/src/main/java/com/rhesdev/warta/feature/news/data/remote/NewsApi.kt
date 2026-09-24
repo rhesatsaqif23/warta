@@ -1,5 +1,6 @@
 package com.rhesdev.warta.feature.news.data.remote
 
+import com.rhesdev.warta.feature.news.data.remote.dto.ArticleDto
 import com.rhesdev.warta.feature.news.data.remote.dto.NewsResponse
 import com.rhesdev.warta.feature.news.data.remote.dto.StatsResponse
 import retrofit2.http.GET
@@ -47,6 +48,11 @@ interface NewsApi {
         @Query("size") size: Int = 30,
         @Query("sort") sort: String = "date"
     ): NewsResponse
+
+    @GET("article")
+    suspend fun getArticle(
+        @Query("url") url: String
+    ): ArticleDto
 
     @GET("stats")
     suspend fun getStats(

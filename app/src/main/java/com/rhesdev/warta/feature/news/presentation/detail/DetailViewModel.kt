@@ -3,6 +3,7 @@ package com.rhesdev.warta.feature.news.presentation.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rhesdev.warta.feature.news.domain.usecase.GetArticleBodyUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.GetNewsByLinkUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val getNewsByLinkUseCase: GetNewsByLinkUseCase
+    private val getNewsByLinkUseCase: GetNewsByLinkUseCase,
+    private val getArticleBodyUseCase: GetArticleBodyUseCase
 ) : ViewModel() {
 
     private val newsLink: String = savedStateHandle["newsLink"] ?: ""
@@ -37,9 +39,37 @@ class DetailViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
                 val news = getNewsByLinkUseCase(newsLink)
-                _uiState.update { it.copy(news = news, isLoading = false) }
+                _uiState.update {
+                    it.copy(
+                        news = news,
+                        isLoading = false,
+                        fullText = news?.content?.takeIf { content -> content.isNotBlank() }
+                    )
+                }
             } catch (e: Exception) {
                 _uiState.update { it.copy(error = e.message, isLoading = false) }
+            }
+        }
+    }
+
+    fun loadFullText() {
+        val state = _uiState.value
+        if (state.fullText != null || state.isLoadingBody) return
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoadingBody = true, bodyError = null) }
+            try {
+                val body = getArticleBodyUseCase(newsLink)
+                if (body != null) {
+                    _uiState.update { it.copy(fullText = body, isLoadingBody = false) }
+                } else {
+                    _uiState.update {
+                        it.copy(bodyError = "Versi lengkap tidak tersedia", isLoadingBody = false)
+                    }
+                }
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(bodyError = e.message, isLoadingBody = false)
+                }
             }
         }
     }

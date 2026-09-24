@@ -63,9 +63,10 @@ fun DetailScreen(
                 actions = {
                     uiState.news?.let { news ->
                         IconButton(onClick = {
+                            val excerpt = uiState.fullText?.take(500) ?: news.contentSnippet
                             val shareIntent = Intent(Intent.ACTION_SEND).apply {
                                 type = "text/plain"
-                                putExtra(Intent.EXTRA_TEXT, "${news.title}\n\n${news.link}")
+                                putExtra(Intent.EXTRA_TEXT, "${news.title}\n\n$excerpt\n\n${news.link}")
                             }
                             context.startActivity(Intent.createChooser(shareIntent, "Bagikan Berita"))
                         }) {
@@ -78,7 +79,8 @@ fun DetailScreen(
     ) { paddingValues ->
         DetailContent(
             uiState = uiState,
-            onReadMore = { link ->
+            onLoadFullText = { viewModel.loadFullText() },
+            onOpenInBrowser = { link ->
                 context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
             },
             onRetry = { viewModel.retry() },
@@ -90,7 +92,8 @@ fun DetailScreen(
 @Composable
 fun DetailContent(
     uiState: DetailUiState,
-    onReadMore: (String) -> Unit,
+    onLoadFullText: () -> Unit,
+    onOpenInBrowser: (String) -> Unit,
     onRetry: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -107,7 +110,11 @@ fun DetailContent(
         uiState.news != null -> {
             NewsDetailContent(
                 news = uiState.news,
-                onReadMore = onReadMore,
+                fullText = uiState.fullText,
+                isLoadingBody = uiState.isLoadingBody,
+                bodyError = uiState.bodyError,
+                onLoadFullText = onLoadFullText,
+                onOpenInBrowser = onOpenInBrowser,
                 modifier = modifier
             )
         }
@@ -117,7 +124,11 @@ fun DetailContent(
 @Composable
 private fun NewsDetailContent(
     news: News,
-    onReadMore: (String) -> Unit,
+    fullText: String?,
+    isLoadingBody: Boolean,
+    bodyError: String?,
+    onLoadFullText: () -> Unit,
+    onOpenInBrowser: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -151,13 +162,40 @@ private fun NewsDetailContent(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = news.contentSnippet,
-                style = MaterialTheme.typography.bodyLarge
-            )
+            if (fullText != null) {
+                Text(
+                    text = fullText,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            } else {
+                Text(
+                    text = news.contentSnippet,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
             Spacer(modifier = Modifier.height(24.dp))
-            TextButton(onClick = { onReadMore(news.link) }) {
-                Text("Baca Selengkapnya")
+            when {
+                isLoadingBody -> LoadingScreen()
+                fullText != null -> {
+                    TextButton(onClick = { onOpenInBrowser(news.link) }) {
+                        Text("Buka di Browser")
+                    }
+                }
+                bodyError != null -> {
+                    Text(
+                        text = bodyError,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                    TextButton(onClick = { onOpenInBrowser(news.link) }) {
+                        Text("Buka di Browser")
+                    }
+                }
+                else -> {
+                    TextButton(onClick = onLoadFullText) {
+                        Text("Baca Selengkapnya")
+                    }
+                }
             }
         }
     }
@@ -182,7 +220,8 @@ private fun DetailContentPreview() {
                 news = sampleNews,
                 isLoading = false
             ),
-            onReadMore = {},
+            onLoadFullText = {},
+            onOpenInBrowser = {},
             onRetry = {}
         )
     }
@@ -194,7 +233,8 @@ private fun DetailContentLoadingPreview() {
     WartaTheme {
         DetailContent(
             uiState = DetailUiState(isLoading = true),
-            onReadMore = {},
+            onLoadFullText = {},
+            onOpenInBrowser = {},
             onRetry = {}
         )
     }
@@ -206,7 +246,8 @@ private fun DetailContentErrorPreview() {
     WartaTheme {
         DetailContent(
             uiState = DetailUiState(error = "Gagal memuat berita"),
-            onReadMore = {},
+            onLoadFullText = {},
+            onOpenInBrowser = {},
             onRetry = {}
         )
     }

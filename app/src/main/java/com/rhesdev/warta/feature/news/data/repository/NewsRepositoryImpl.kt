@@ -1,6 +1,7 @@
 package com.rhesdev.warta.feature.news.data.repository
 
 import com.rhesdev.warta.feature.news.data.local.NewsDao
+import com.rhesdev.warta.feature.news.data.mapper.toContent
 import com.rhesdev.warta.feature.news.data.mapper.toDomain
 import com.rhesdev.warta.feature.news.data.mapper.toEntity
 import com.rhesdev.warta.feature.news.data.remote.NewsApi
@@ -39,6 +40,20 @@ class NewsRepositoryImpl @Inject constructor(
     override suspend fun getNewsByLink(link: String): News? {
         return withContext(Dispatchers.IO) {
             dao.getNewsByLink(link)?.toDomain()
+        }
+    }
+
+    override suspend fun getArticleBody(link: String): String? {
+        return withContext(Dispatchers.IO) {
+            dao.getNewsByLink(link)?.content?.takeIf { it.isNotBlank() }?.let { return@withContext it }
+            try {
+                val body = api.getArticle(link).toContent()
+                if (body.isBlank()) return@withContext null
+                dao.updateContent(link, body)
+                body
+            } catch (_: Exception) {
+                null
+            }
         }
     }
 
