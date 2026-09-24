@@ -86,7 +86,8 @@ fun WartaNavGraph(
                 arguments = listOf(navArgument("newsLink") { type = NavType.StringType })
             ) {
                 DetailScreen(
-                    onBackClick = { navController.popBackStack() }
+                    onBackClick = { navController.popBackStack() },
+                    onSearchClick = { navController.navigate(Routes.SEARCH) }
                 )
             }
 

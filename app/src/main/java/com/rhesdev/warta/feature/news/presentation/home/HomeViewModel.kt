@@ -89,22 +89,23 @@ class HomeViewModel @Inject constructor(
         _uiState.update { it.copy(selectedCategory = category) }
         val query = homeCategories.firstOrNull { it.key == category }?.query
         if (query != null && category != null) {
-            fetchCategory(query, category)
+            silentFetch { refreshNewsByCategoryUseCase(query, category) }
         } else {
-            refresh(isInitial = false)
+            silentFetch {
+                refreshNewsUseCase()
+                latestOffset = PAGE_SIZE
+            }
         }
     }
 
-    private fun fetchCategory(query: String, category: String) {
+    private fun silentFetch(fetch: suspend () -> Unit) {
         refreshJob?.cancel()
         refreshJob = viewModelScope.launch {
-            _uiState.update { it.copy(isRefreshing = true, error = null) }
+            _uiState.update { it.copy(error = null) }
             try {
-                refreshNewsByCategoryUseCase(query, category)
+                fetch()
             } catch (e: Exception) {
                 _uiState.update { it.copy(error = e.message) }
-            } finally {
-                _uiState.update { it.copy(isRefreshing = false) }
             }
         }
     }
@@ -119,17 +120,7 @@ class HomeViewModel @Inject constructor(
     private fun selectDay(day: String?) {
         _uiState.update { it.copy(selectedDay = day) }
         if (day == null) return
-        refreshJob?.cancel()
-        refreshJob = viewModelScope.launch {
-            _uiState.update { it.copy(isRefreshing = true, error = null) }
-            try {
-                refreshNewsByDayUseCase(day)
-            } catch (e: Exception) {
-                _uiState.update { it.copy(error = e.message) }
-            } finally {
-                _uiState.update { it.copy(isRefreshing = false) }
-            }
-        }
+        silentFetch { refreshNewsByDayUseCase(day) }
     }
 
     private fun loadMore() {

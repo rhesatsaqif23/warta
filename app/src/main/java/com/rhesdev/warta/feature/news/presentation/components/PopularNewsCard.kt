@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.rhesdev.warta.core.utils.DateFormatter
 import com.rhesdev.warta.feature.news.domain.model.News
 
 // Popular news card with image, title, and actions.
@@ -63,7 +64,7 @@ fun PopularNewsCard(
                 .padding(horizontal = 16.dp)
         ) {
             Text(
-                text = news.isoDate,
+                text = DateFormatter.formatCardDate(news.isoDate),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.weight(1f)
@@ -86,7 +87,7 @@ private fun PopularNewsCardPreview() {
             link = "https://example.com",
             title = "Berita Populer Hari Ini",
             contentSnippet = "Description",
-            isoDate = "3 jam lalu",
+            isoDate = "2024-12-11T11:21:00.000Z",
             imageUrl = "",
             source = "Tribun",
             category = "nasional"

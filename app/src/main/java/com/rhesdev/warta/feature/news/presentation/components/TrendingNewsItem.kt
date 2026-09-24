@@ -21,6 +21,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.rhesdev.warta.core.utils.DateFormatter
 import com.rhesdev.warta.feature.news.domain.model.News
 
 // Horizontal trending news row.
@@ -48,7 +49,7 @@ fun TrendingNewsItem(
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = news.isoDate,
+                text = DateFormatter.formatCardDate(news.isoDate),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(top = 4.dp)
@@ -74,7 +75,7 @@ private fun TrendingNewsItemPreview() {
             link = "https://example.com",
             title = "Trending: Teknologi AI Terbaru",
             contentSnippet = "Description",
-            isoDate = "5 jam lalu",
+            isoDate = "2024-12-11T11:21:00.000Z",
             imageUrl = "",
             source = "Detik",
             category = "teknologi"
