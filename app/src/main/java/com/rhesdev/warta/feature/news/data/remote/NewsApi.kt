@@ -1,6 +1,8 @@
 package com.rhesdev.warta.feature.news.data.remote
 
+import com.rhesdev.warta.feature.news.data.remote.dto.ArticleDto
 import com.rhesdev.warta.feature.news.data.remote.dto.NewsResponse
+import com.rhesdev.warta.feature.news.data.remote.dto.StatsResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -11,8 +13,10 @@ interface NewsApi {
     suspend fun getNews(
         @Query("country") country: String = "ID",
         @Query("lang") lang: String = "id",
-        @Query("size") size: Int = 30,
-        @Query("sort") sort: String = "date"
+        @Query("size") size: Int = 100,
+        @Query("sort") sort: String = "date",
+        @Query("date") date: String? = "48h",
+        @Query("offset") offset: Int = 0
     ): NewsResponse
 
     @GET("search")
@@ -20,6 +24,33 @@ interface NewsApi {
         @Query("q") query: String,
         @Query("country") country: String = "ID",
         @Query("lang") lang: String = "id",
-        @Query("size") size: Int = 30
+        @Query("size") size: Int = 30,
+        @Query("sort") sort: String = "relevance",
+        @Query("date") date: String? = null
     ): NewsResponse
+
+    @GET("search")
+    suspend fun getNewsByDateRange(
+        @Query("from") from: String,
+        @Query("to") to: String,
+        @Query("country") country: String = "ID",
+        @Query("lang") lang: String = "id",
+        @Query("size") size: Int = 30,
+        @Query("sort") sort: String = "date"
+    ): NewsResponse
+
+    @GET("article")
+    suspend fun getArticle(
+        @Query("url") url: String
+    ): ArticleDto
+
+    @GET("stats")
+    suspend fun getStats(
+        @Query("q") q: String? = null,
+        @Query("country") country: String = "ID",
+        @Query("lang") lang: String = "id",
+        @Query("date") date: String = "7d",
+        @Query("top") top: Int = 8,
+        @Query("strict_country") strictCountry: Boolean = true
+    ): StatsResponse
 }

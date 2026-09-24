@@ -21,4 +21,7 @@ interface NewsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(news: List<NewsEntity>)
+
+    @Query("UPDATE news_table SET content = :content WHERE link = :link")
+    suspend fun updateContent(link: String, content: String)
 }

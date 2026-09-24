@@ -10,7 +10,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -25,9 +29,10 @@ import com.rhesdev.warta.feature.news.presentation.components.HeadlineCard
 import com.rhesdev.warta.feature.news.presentation.components.PopularNewsCard
 import com.rhesdev.warta.feature.news.presentation.components.SectionHeader
 import com.rhesdev.warta.feature.news.presentation.components.TrendingNewsItem
-import com.rhesdev.warta.feature.news.presentation.home.components.HomeTopBar
+import com.rhesdev.warta.core.presentation.components.WartaTopBar
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
 import com.rhesdev.warta.feature.news.presentation.home.components.HomeCategoryRow
+import com.rhesdev.warta.feature.news.presentation.home.components.TrendStrip
 import com.rhesdev.warta.feature.news.presentation.home.components.homeCategories
 import com.rhesdev.warta.feature.news.domain.model.News
 
@@ -48,6 +53,7 @@ fun HomeScreen(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeContent(
     uiState: HomeUiState,
@@ -56,12 +62,17 @@ fun HomeContent(
     onSearchClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+    PullToRefreshBox(
+        isRefreshing = uiState.isRefreshing,
+        onRefresh = { onEvent(HomeUiEvent.OnRefresh) },
+        modifier = modifier.fillMaxSize()
     ) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
         item {
-            HomeTopBar(onSearchClick = onSearchClick)
+            WartaTopBar(onSearchClick = onSearchClick)
         }
 
         item {
@@ -70,6 +81,16 @@ fun HomeContent(
                 selectedCategory = uiState.selectedCategory,
                 onCategorySelected = { onEvent(HomeUiEvent.OnCategorySelected(it)) }
             )
+        }
+
+        if (uiState.trendByDay.isNotEmpty()) {
+            item {
+                TrendStrip(
+                    byDay = uiState.trendByDay,
+                    selectedDay = uiState.selectedDay,
+                    onDaySelected = { onEvent(HomeUiEvent.OnDaySelected(it)) }
+                )
+            }
         }
 
         when {
@@ -91,8 +112,10 @@ fun HomeContent(
             }
             else -> NewsSections(
                 uiState = uiState,
+                onEvent = onEvent,
                 onNewsClick = onNewsClick
             )
+        }
         }
     }
 }
@@ -112,6 +135,7 @@ private fun LazyListScope.StatePlaceholder(content: @Composable () -> Unit) {
 
 private fun LazyListScope.NewsSections(
     uiState: HomeUiState,
+    onEvent: (HomeUiEvent) -> Unit,
     onNewsClick: (String) -> Unit
 ) {
     item {
@@ -158,6 +182,27 @@ private fun LazyListScope.NewsSections(
                 onClick = { onNewsClick(news.link) },
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
+        }
+    }
+
+    if (uiState.selectedCategory == null && uiState.selectedDay == null &&
+        uiState.filteredNews.isNotEmpty()
+    ) {
+        item {
+            if (uiState.isLoadingMore) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            } else {
+                LaunchedEffect(uiState.filteredNews.size) {
+                    onEvent(HomeUiEvent.OnLoadMore)
+                }
+            }
         }
     }
 }

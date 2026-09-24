@@ -19,6 +19,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.rhesdev.warta.core.utils.DateFormatter
 import com.rhesdev.warta.feature.news.domain.model.News
 
 // Generic news row with thumbnail, title, and source.
@@ -58,6 +59,11 @@ fun NewsCard(
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
+            Text(
+                text = DateFormatter.formatCardDate(news.isoDate),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }
@@ -70,7 +76,7 @@ private fun NewsCardPreview() {
             link = "https://example.com",
             title = "Breaking News: Indonesia Economic Growth Exceeds Expectations",
             contentSnippet = "Short description",
-            isoDate = "2 jam lalu",
+            isoDate = "2024-12-11T11:21:00.000Z",
             imageUrl = "",
             source = "CNN",
             category = "nasional"

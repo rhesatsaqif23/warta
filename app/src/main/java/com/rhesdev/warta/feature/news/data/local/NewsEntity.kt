@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-/** Room entity for news articles stored locally. */
+// Room entity for cached news articles.
 @Entity(
     tableName = "news_table",
     indices = [
@@ -20,5 +20,6 @@ data class NewsEntity(
     val isoDate: String,
     val imageUrl: String,
     val source: String,
-    val category: String
+    val category: String,
+    val content: String = ""
 )

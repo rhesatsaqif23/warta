@@ -59,7 +59,7 @@ object NewsModule {
             context,
             WartaDatabase::class.java,
             "warta_database"
-        ).build()
+        ).addMigrations(WartaDatabase.MIGRATION_1_2).build()
     }
 
     @Provides
