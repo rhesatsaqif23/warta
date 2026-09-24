@@ -9,6 +9,7 @@ import com.rhesdev.warta.feature.news.domain.usecase.RefreshNewsByCategoryUseCas
 import com.rhesdev.warta.feature.news.domain.usecase.RefreshNewsByDayUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.RefreshNewsByHostUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.RefreshNewsUseCase
+import com.rhesdev.warta.feature.news.domain.usecase.RefreshTodayNewsUseCase
 import com.rhesdev.warta.feature.news.presentation.home.components.homeCategories
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -30,6 +31,7 @@ class HomeViewModel @Inject constructor(
     private val refreshNewsByCategoryUseCase: RefreshNewsByCategoryUseCase,
     private val refreshNewsByDayUseCase: RefreshNewsByDayUseCase,
     private val refreshNewsByHostUseCase: RefreshNewsByHostUseCase,
+    private val refreshTodayNewsUseCase: RefreshTodayNewsUseCase,
     private val loadMoreNewsUseCase: LoadMoreNewsUseCase,
     private val getTrendStatsUseCase: GetTrendStatsUseCase
 ) : ViewModel() {
@@ -90,20 +92,41 @@ class HomeViewModel @Inject constructor(
 
     private fun selectCategory(category: String?) {
         _uiState.update { it.copy(selectedCategory = category) }
-        val query = homeCategories.firstOrNull { it.key == category }?.query
-        if (query == null || category == null) {
-            refresh(isInitial = false)
+        val entry = homeCategories.firstOrNull { it.key == category }
+        val query = entry?.query
+        if (query != null && category != null) {
+            fetchCategory(query, category)
+        } else if (entry?.date != null) {
+            fetchToday()
         } else {
-            refreshJob?.cancel()
-            refreshJob = viewModelScope.launch {
-                _uiState.update { it.copy(isRefreshing = true, error = null) }
-                try {
-                    refreshNewsByCategoryUseCase(query, category)
-                } catch (e: Exception) {
-                    _uiState.update { it.copy(error = e.message) }
-                } finally {
-                    _uiState.update { it.copy(isRefreshing = false) }
-                }
+            refresh(isInitial = false)
+        }
+    }
+
+    private fun fetchCategory(query: String, category: String) {
+        refreshJob?.cancel()
+        refreshJob = viewModelScope.launch {
+            _uiState.update { it.copy(isRefreshing = true, error = null) }
+            try {
+                refreshNewsByCategoryUseCase(query, category)
+            } catch (e: Exception) {
+                _uiState.update { it.copy(error = e.message) }
+            } finally {
+                _uiState.update { it.copy(isRefreshing = false) }
+            }
+        }
+    }
+
+    private fun fetchToday() {
+        refreshJob?.cancel()
+        refreshJob = viewModelScope.launch {
+            _uiState.update { it.copy(isRefreshing = true, error = null) }
+            try {
+                refreshTodayNewsUseCase()
+            } catch (e: Exception) {
+                _uiState.update { it.copy(error = e.message) }
+            } finally {
+                _uiState.update { it.copy(isRefreshing = false) }
             }
         }
     }

@@ -60,6 +60,7 @@ interface NewsApi {
         @Query("country") country: String = "ID",
         @Query("lang") lang: String = "id",
         @Query("date") date: String = "7d",
-        @Query("top") top: Int = 8
+        @Query("top") top: Int = 8,
+        @Query("strict_country") strictCountry: Boolean = true
     ): StatsResponse
 }
