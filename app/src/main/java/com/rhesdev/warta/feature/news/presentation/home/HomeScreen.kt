@@ -29,7 +29,7 @@ import com.rhesdev.warta.feature.news.presentation.components.HeadlineCard
 import com.rhesdev.warta.feature.news.presentation.components.PopularNewsCard
 import com.rhesdev.warta.feature.news.presentation.components.SectionHeader
 import com.rhesdev.warta.feature.news.presentation.components.TrendingNewsItem
-import com.rhesdev.warta.feature.news.presentation.home.components.HomeTopBar
+import com.rhesdev.warta.core.presentation.components.WartaTopBar
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
 import com.rhesdev.warta.feature.news.presentation.home.components.HomeCategoryRow
 import com.rhesdev.warta.feature.news.presentation.home.components.TrendStrip
@@ -72,7 +72,7 @@ fun HomeContent(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
         item {
-            HomeTopBar(onSearchClick = onSearchClick)
+            WartaTopBar(onSearchClick = onSearchClick)
         }
 
         item {

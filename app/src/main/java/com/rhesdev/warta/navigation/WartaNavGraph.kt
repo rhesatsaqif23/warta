@@ -1,5 +1,7 @@
 package com.rhesdev.warta.navigation
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.GridView
@@ -18,6 +20,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.rhesdev.warta.core.presentation.components.EmptyState
 import com.rhesdev.warta.core.presentation.components.WartaBottomNavigationBar
+import com.rhesdev.warta.core.presentation.components.WartaTopBar
 import com.rhesdev.warta.feature.news.presentation.detail.DetailScreen
 import com.rhesdev.warta.feature.news.presentation.home.HomeScreen
 import com.rhesdev.warta.feature.news.presentation.search.SearchScreen
@@ -102,19 +105,31 @@ fun WartaNavGraph(
             }
 
             composable(Routes.CATEGORY) {
-                EmptyState(
-                    title = "Kategori",
-                    message = "Halaman kategori segera hadir",
-                    icon = Icons.Outlined.GridView
-                )
+                Column(modifier = Modifier.fillMaxSize()) {
+                    WartaTopBar(
+                        onSearchClick = { navController.navigate(Routes.SEARCH) }
+                    )
+                    EmptyState(
+                        title = "Kategori",
+                        message = "Halaman kategori segera hadir",
+                        icon = Icons.Outlined.GridView,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
             }
 
             composable(Routes.PROFILE) {
-                EmptyState(
-                    title = "Profil",
-                    message = "Halaman profil segera hadir",
-                    icon = Icons.Outlined.Person
-                )
+                Column(modifier = Modifier.fillMaxSize()) {
+                    WartaTopBar(
+                        onSearchClick = { navController.navigate(Routes.SEARCH) }
+                    )
+                    EmptyState(
+                        title = "Profil",
+                        message = "Halaman profil segera hadir",
+                        icon = Icons.Outlined.Person,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
             }
         }
     }

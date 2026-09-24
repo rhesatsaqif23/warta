@@ -2,20 +2,14 @@ package com.rhesdev.warta.feature.news.presentation.detail
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -41,7 +35,7 @@ import com.rhesdev.warta.core.presentation.theme.WartaTheme
 import com.rhesdev.warta.core.utils.DateFormatter
 import com.rhesdev.warta.feature.news.domain.model.News
 import com.rhesdev.warta.feature.news.presentation.components.NewsImage
-import com.rhesdev.warta.feature.news.presentation.home.components.HomeTopBar
+import com.rhesdev.warta.core.presentation.components.WartaTopBar
 
 @Composable
 fun DetailScreen(
@@ -63,8 +57,9 @@ fun DetailScreen(
 
     Scaffold(
         topBar = {
-            HomeTopBar(
+            WartaTopBar(
                 onSearchClick = onSearchClick,
+                onBackClick = onBackClick,
                 // Menu icon doubles as the share action; no dedicated share icon in this layout.
                 onMenuClick = { uiState.news?.let(::shareArticle) }
             )
@@ -77,7 +72,6 @@ fun DetailScreen(
                 context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
             },
             onRetry = { viewModel.retry() },
-            onBackClick = onBackClick,
             modifier = Modifier.padding(paddingValues)
         )
     }
@@ -89,7 +83,6 @@ fun DetailContent(
     onLoadFullText: () -> Unit,
     onOpenInBrowser: (String) -> Unit,
     onRetry: () -> Unit,
-    onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     when {
@@ -110,7 +103,6 @@ fun DetailContent(
                 bodyError = uiState.bodyError,
                 onLoadFullText = onLoadFullText,
                 onOpenInBrowser = onOpenInBrowser,
-                onBackClick = onBackClick,
                 modifier = modifier
             )
         }
@@ -140,7 +132,6 @@ private fun NewsDetailContent(
     bodyError: String?,
     onLoadFullText: () -> Unit,
     onOpenInBrowser: (String) -> Unit,
-    onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -148,32 +139,18 @@ private fun NewsDetailContent(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        Box {
-            NewsImage(
-                imageUrl = news.imageUrl,
-                contentDescription = news.title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(250.dp)
-            )
-            IconButton(
-                onClick = onBackClick,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .size(36.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Kembali",
-                    tint = Color.White
-                )
-            }
-        }
+        NewsImage(
+            imageUrl = news.imageUrl,
+            contentDescription = news.title,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(250.dp)
+        )
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
                 text = news.category.uppercase(),
-                style = MaterialTheme.typography.labelMedium,
+                style = MaterialTheme.typography.titleSmall,
                 color = Accent
             )
             Spacer(modifier = Modifier.height(4.dp))
@@ -184,12 +161,12 @@ private fun NewsDetailContent(
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = news.source,
-                style = MaterialTheme.typography.labelMedium,
+                style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Text(
                 text = DateFormatter.formatDetailDate(news.isoDate),
-                style = MaterialTheme.typography.labelMedium,
+                style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -247,8 +224,7 @@ private fun DetailContentPreview() {
             ),
             onLoadFullText = {},
             onOpenInBrowser = {},
-            onRetry = {},
-            onBackClick = {}
+            onRetry = {}
         )
     }
 }
@@ -261,8 +237,7 @@ private fun DetailContentLoadingPreview() {
             uiState = DetailUiState(isLoading = true),
             onLoadFullText = {},
             onOpenInBrowser = {},
-            onRetry = {},
-            onBackClick = {}
+            onRetry = {}
         )
     }
 }
@@ -275,8 +250,7 @@ private fun DetailContentErrorPreview() {
             uiState = DetailUiState(error = "Gagal memuat berita"),
             onLoadFullText = {},
             onOpenInBrowser = {},
-            onRetry = {},
-            onBackClick = {}
+            onRetry = {}
         )
     }
 }
