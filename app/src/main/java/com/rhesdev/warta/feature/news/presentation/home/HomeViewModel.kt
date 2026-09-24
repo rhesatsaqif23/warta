@@ -7,9 +7,7 @@ import com.rhesdev.warta.feature.news.domain.usecase.GetTrendStatsUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.LoadMoreNewsUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.RefreshNewsByCategoryUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.RefreshNewsByDayUseCase
-import com.rhesdev.warta.feature.news.domain.usecase.RefreshNewsByHostUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.RefreshNewsUseCase
-import com.rhesdev.warta.feature.news.domain.usecase.RefreshTodayNewsUseCase
 import com.rhesdev.warta.feature.news.presentation.home.components.homeCategories
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -30,8 +28,6 @@ class HomeViewModel @Inject constructor(
     private val refreshNewsUseCase: RefreshNewsUseCase,
     private val refreshNewsByCategoryUseCase: RefreshNewsByCategoryUseCase,
     private val refreshNewsByDayUseCase: RefreshNewsByDayUseCase,
-    private val refreshNewsByHostUseCase: RefreshNewsByHostUseCase,
-    private val refreshTodayNewsUseCase: RefreshTodayNewsUseCase,
     private val loadMoreNewsUseCase: LoadMoreNewsUseCase,
     private val getTrendStatsUseCase: GetTrendStatsUseCase
 ) : ViewModel() {
@@ -45,13 +41,12 @@ class HomeViewModel @Inject constructor(
     init {
         observeNews()
         refresh()
-        loadSources()
+        loadTrendStats()
     }
 
     fun onEvent(event: HomeUiEvent) {
         when (event) {
             is HomeUiEvent.OnCategorySelected -> selectCategory(event.category)
-            is HomeUiEvent.OnSourceSelected -> selectSource(event.source)
             is HomeUiEvent.OnDaySelected -> selectDay(event.day)
             HomeUiEvent.OnRetry -> refresh(isInitial = true)
             HomeUiEvent.OnRefresh -> refresh(isInitial = false)
@@ -92,12 +87,9 @@ class HomeViewModel @Inject constructor(
 
     private fun selectCategory(category: String?) {
         _uiState.update { it.copy(selectedCategory = category) }
-        val entry = homeCategories.firstOrNull { it.key == category }
-        val query = entry?.query
+        val query = homeCategories.firstOrNull { it.key == category }?.query
         if (query != null && category != null) {
             fetchCategory(query, category)
-        } else if (entry?.date != null) {
-            fetchToday()
         } else {
             refresh(isInitial = false)
         }
@@ -117,29 +109,10 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun fetchToday() {
-        refreshJob?.cancel()
-        refreshJob = viewModelScope.launch {
-            _uiState.update { it.copy(isRefreshing = true, error = null) }
-            try {
-                refreshTodayNewsUseCase()
-            } catch (e: Exception) {
-                _uiState.update { it.copy(error = e.message) }
-            } finally {
-                _uiState.update { it.copy(isRefreshing = false) }
-            }
-        }
-    }
-
-    private fun loadSources() {
+    private fun loadTrendStats() {
         viewModelScope.launch {
             val stats = getTrendStatsUseCase()
-            _uiState.update {
-                it.copy(
-                    sources = stats.hosts.keys.toList(),
-                    trendByDay = stats.byDay
-                )
-            }
+            _uiState.update { it.copy(trendByDay = stats.byDay) }
         }
     }
 
@@ -159,28 +132,10 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun selectSource(source: String?) {
-        _uiState.update { it.copy(selectedSource = source) }
-        if (source == null) return
-        refreshJob?.cancel()
-        refreshJob = viewModelScope.launch {
-            _uiState.update { it.copy(isRefreshing = true, error = null) }
-            try {
-                refreshNewsByHostUseCase(source)
-            } catch (e: Exception) {
-                _uiState.update { it.copy(error = e.message) }
-            } finally {
-                _uiState.update { it.copy(isRefreshing = false) }
-            }
-        }
-    }
-
     private fun loadMore() {
         val state = _uiState.value
         if (state.isLoading || state.isLoadingMore) return
-        if (state.selectedCategory != null || state.selectedSource != null ||
-            state.selectedDay != null
-        ) return
+        if (state.selectedCategory != null || state.selectedDay != null) return
         viewModelScope.launch {
             _uiState.update { it.copy(isLoadingMore = true) }
             try {

@@ -30,16 +30,6 @@ interface NewsApi {
     ): NewsResponse
 
     @GET("search")
-    suspend fun getNewsByHost(
-        @Query("host") host: String,
-        @Query("country") country: String = "ID",
-        @Query("lang") lang: String = "id",
-        @Query("size") size: Int = 30,
-        @Query("sort") sort: String = "date",
-        @Query("date") date: String? = "48h"
-    ): NewsResponse
-
-    @GET("search")
     suspend fun getNewsByDateRange(
         @Query("from") from: String,
         @Query("to") to: String,

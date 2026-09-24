@@ -19,10 +19,6 @@ interface NewsRepository {
 
     suspend fun refreshNewsByCategory(query: String, category: String)
 
-    suspend fun refreshTodayNews()
-
-    suspend fun refreshNewsByHost(host: String)
-
     suspend fun loadMoreNews(offset: Int)
 
     suspend fun refreshNewsByDay(day: String)

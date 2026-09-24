@@ -75,24 +75,6 @@ class NewsRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun refreshTodayNews() {
-        withContext(Dispatchers.IO) {
-            try {
-                val response = api.getNews(date = "today")
-                dao.insertAll(response.results.map { it.toEntity().copy(category = "today") })
-            } catch (_: Exception) { }
-        }
-    }
-
-    override suspend fun refreshNewsByHost(host: String) {
-        withContext(Dispatchers.IO) {
-            try {
-                val response = api.getNewsByHost(host)
-                dao.insertAll(response.results.map { it.toEntity() })
-            } catch (_: Exception) { }
-        }
-    }
-
     override suspend fun loadMoreNews(offset: Int) {
         withContext(Dispatchers.IO) {
             try {
