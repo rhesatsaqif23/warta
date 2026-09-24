@@ -5,6 +5,7 @@ import com.rhesdev.warta.feature.news.data.mapper.toDomain
 import com.rhesdev.warta.feature.news.data.mapper.toEntity
 import com.rhesdev.warta.feature.news.data.remote.NewsApi
 import com.rhesdev.warta.feature.news.domain.model.News
+import com.rhesdev.warta.feature.news.domain.model.NewsStats
 import com.rhesdev.warta.feature.news.domain.repository.NewsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -48,9 +49,37 @@ class NewsRepositoryImpl @Inject constructor(
     override suspend fun refreshNewsByCategory(query: String, category: String) {
         withContext(Dispatchers.IO) {
             try {
-                val response = api.searchNews(query)
+                val response = api.searchNews(query, date = "48h")
                 dao.insertAll(response.results.map { it.toEntity().copy(category = category) })
             } catch (_: Exception) { }
+        }
+    }
+
+    override suspend fun refreshNewsByHost(host: String) {
+        withContext(Dispatchers.IO) {
+            try {
+                val response = api.getNewsByHost(host)
+                dao.insertAll(response.results.map { it.toEntity() })
+            } catch (_: Exception) { }
+        }
+    }
+
+    override suspend fun loadMoreNews(offset: Int) {
+        withContext(Dispatchers.IO) {
+            try {
+                val response = api.getNews(offset = offset)
+                dao.insertAll(response.results.map { it.toEntity() })
+            } catch (_: Exception) { }
+        }
+    }
+
+    override suspend fun getTrendStats(): NewsStats {
+        return withContext(Dispatchers.IO) {
+            try {
+                api.getStats().toDomain()
+            } catch (_: Exception) {
+                NewsStats()
+            }
         }
     }
 

@@ -10,7 +10,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -28,6 +30,7 @@ import com.rhesdev.warta.feature.news.presentation.components.TrendingNewsItem
 import com.rhesdev.warta.feature.news.presentation.home.components.HomeTopBar
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
 import com.rhesdev.warta.feature.news.presentation.home.components.HomeCategoryRow
+import com.rhesdev.warta.feature.news.presentation.home.components.HomeSourceRow
 import com.rhesdev.warta.feature.news.presentation.home.components.homeCategories
 import com.rhesdev.warta.feature.news.domain.model.News
 
@@ -72,6 +75,16 @@ fun HomeContent(
             )
         }
 
+        if (uiState.sources.isNotEmpty()) {
+            item {
+                HomeSourceRow(
+                    sources = uiState.sources,
+                    selectedSource = uiState.selectedSource,
+                    onSourceSelected = { onEvent(HomeUiEvent.OnSourceSelected(it)) }
+                )
+            }
+        }
+
         when {
             uiState.isLoading -> StatePlaceholder {
                 LoadingScreen()
@@ -91,6 +104,7 @@ fun HomeContent(
             }
             else -> NewsSections(
                 uiState = uiState,
+                onEvent = onEvent,
                 onNewsClick = onNewsClick
             )
         }
@@ -112,6 +126,7 @@ private fun LazyListScope.StatePlaceholder(content: @Composable () -> Unit) {
 
 private fun LazyListScope.NewsSections(
     uiState: HomeUiState,
+    onEvent: (HomeUiEvent) -> Unit,
     onNewsClick: (String) -> Unit
 ) {
     item {
@@ -158,6 +173,27 @@ private fun LazyListScope.NewsSections(
                 onClick = { onNewsClick(news.link) },
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
+        }
+    }
+
+    if (uiState.selectedCategory == null && uiState.selectedSource == null &&
+        uiState.filteredNews.isNotEmpty()
+    ) {
+        item {
+            if (uiState.isLoadingMore) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            } else {
+                LaunchedEffect(uiState.filteredNews.size) {
+                    onEvent(HomeUiEvent.OnLoadMore)
+                }
+            }
         }
     }
 }

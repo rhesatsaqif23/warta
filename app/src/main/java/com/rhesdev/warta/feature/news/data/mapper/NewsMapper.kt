@@ -2,7 +2,9 @@ package com.rhesdev.warta.feature.news.data.mapper
 
 import com.rhesdev.warta.feature.news.data.local.NewsEntity
 import com.rhesdev.warta.feature.news.data.remote.dto.NewsDto
+import com.rhesdev.warta.feature.news.data.remote.dto.StatsResponse
 import com.rhesdev.warta.feature.news.domain.model.News
+import com.rhesdev.warta.feature.news.domain.model.NewsStats
 
 // Maps API DTOs and Room entities to domain models.
 fun NewsDto.toEntity(): NewsEntity {
@@ -14,6 +16,14 @@ fun NewsDto.toEntity(): NewsEntity {
         imageUrl = image ?: "",
         source = sitename ?: host ?: "",
         category = categories?.firstOrNull() ?: "general"
+    )
+}
+
+fun StatsResponse.toDomain(): NewsStats {
+    return NewsStats(
+        total = total,
+        hosts = hosts ?: emptyMap(),
+        byDay = byDay ?: emptyMap()
     )
 }
 
