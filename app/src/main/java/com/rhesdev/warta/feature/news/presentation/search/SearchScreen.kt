@@ -12,7 +12,9 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rhesdev.warta.core.presentation.components.EditableSearchField
 import com.rhesdev.warta.core.presentation.components.EmptyState
@@ -107,6 +110,16 @@ fun SearchContent(
                 )
             }
             else -> {
+                uiState.totalResults?.let { total ->
+                    if (uiState.query.isNotBlank()) {
+                        Text(
+                            text = "±${formatCount(total)} artikel untuk \"${uiState.query}\"",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                        )
+                    }
+                }
                 LazyColumn {
                     items(uiState.results, key = { it.link }) { news ->
                         NewsCard(
@@ -119,6 +132,11 @@ fun SearchContent(
         }
     }
 }
+
+private fun formatCount(total: Int): String =
+    java.text.NumberFormat
+        .getNumberInstance(java.util.Locale("id", "ID"))
+        .format(total)
 
 private val sampleResults = listOf(
     News(

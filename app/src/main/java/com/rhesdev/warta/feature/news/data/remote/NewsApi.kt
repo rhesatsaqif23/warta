@@ -38,8 +38,19 @@ interface NewsApi {
         @Query("date") date: String? = "48h"
     ): NewsResponse
 
+    @GET("search")
+    suspend fun getNewsByDateRange(
+        @Query("from") from: String,
+        @Query("to") to: String,
+        @Query("country") country: String = "ID",
+        @Query("lang") lang: String = "id",
+        @Query("size") size: Int = 30,
+        @Query("sort") sort: String = "date"
+    ): NewsResponse
+
     @GET("stats")
     suspend fun getStats(
+        @Query("q") q: String? = null,
         @Query("country") country: String = "ID",
         @Query("lang") lang: String = "id",
         @Query("date") date: String = "7d",

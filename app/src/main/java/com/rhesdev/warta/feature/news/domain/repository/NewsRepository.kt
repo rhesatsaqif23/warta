@@ -21,7 +21,11 @@ interface NewsRepository {
 
     suspend fun loadMoreNews(offset: Int)
 
+    suspend fun refreshNewsByDay(day: String)
+
     suspend fun getTrendStats(): NewsStats
+
+    suspend fun getSearchStats(query: String): NewsStats
 
     suspend fun searchAndRefresh(query: String)
 }

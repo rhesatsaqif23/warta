@@ -2,6 +2,7 @@ package com.rhesdev.warta.feature.news.presentation.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rhesdev.warta.feature.news.domain.usecase.GetSearchStatsUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.SearchAndRefreshUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.SearchNewsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val searchNewsUseCase: SearchNewsUseCase,
-    private val searchAndRefreshUseCase: SearchAndRefreshUseCase
+    private val searchAndRefreshUseCase: SearchAndRefreshUseCase,
+    private val getSearchStatsUseCase: GetSearchStatsUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SearchUiState())
@@ -35,7 +37,7 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun submitQuery(query: String) {
-        _uiState.update { it.copy(query = query, error = null) }
+        _uiState.update { it.copy(query = query, error = null, totalResults = null) }
         searchJob?.cancel()
         if (query.isBlank()) {
             _uiState.update { it.copy(results = emptyList(), isLoading = false) }
@@ -46,6 +48,8 @@ class SearchViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true) }
             try {
                 searchAndRefreshUseCase(query)
+                val stats = getSearchStatsUseCase(query)
+                _uiState.update { it.copy(totalResults = stats.total) }
             } catch (e: Exception) {
                 _uiState.update { it.copy(error = e.message) }
             }

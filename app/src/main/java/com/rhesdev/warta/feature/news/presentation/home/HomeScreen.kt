@@ -31,6 +31,7 @@ import com.rhesdev.warta.feature.news.presentation.home.components.HomeTopBar
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
 import com.rhesdev.warta.feature.news.presentation.home.components.HomeCategoryRow
 import com.rhesdev.warta.feature.news.presentation.home.components.HomeSourceRow
+import com.rhesdev.warta.feature.news.presentation.home.components.TrendStrip
 import com.rhesdev.warta.feature.news.presentation.home.components.homeCategories
 import com.rhesdev.warta.feature.news.domain.model.News
 
@@ -73,6 +74,16 @@ fun HomeContent(
                 selectedCategory = uiState.selectedCategory,
                 onCategorySelected = { onEvent(HomeUiEvent.OnCategorySelected(it)) }
             )
+        }
+
+        if (uiState.trendByDay.isNotEmpty()) {
+            item {
+                TrendStrip(
+                    byDay = uiState.trendByDay,
+                    selectedDay = uiState.selectedDay,
+                    onDaySelected = { onEvent(HomeUiEvent.OnDaySelected(it)) }
+                )
+            }
         }
 
         if (uiState.sources.isNotEmpty()) {
@@ -177,7 +188,7 @@ private fun LazyListScope.NewsSections(
     }
 
     if (uiState.selectedCategory == null && uiState.selectedSource == null &&
-        uiState.filteredNews.isNotEmpty()
+        uiState.selectedDay == null && uiState.filteredNews.isNotEmpty()
     ) {
         item {
             if (uiState.isLoadingMore) {

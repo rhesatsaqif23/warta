@@ -6,6 +6,7 @@ import com.rhesdev.warta.feature.news.domain.usecase.GetTopNewsUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.GetTrendStatsUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.LoadMoreNewsUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.RefreshNewsByCategoryUseCase
+import com.rhesdev.warta.feature.news.domain.usecase.RefreshNewsByDayUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.RefreshNewsByHostUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.RefreshNewsUseCase
 import com.rhesdev.warta.feature.news.presentation.home.components.homeCategories
@@ -27,6 +28,7 @@ class HomeViewModel @Inject constructor(
     private val getTopNewsUseCase: GetTopNewsUseCase,
     private val refreshNewsUseCase: RefreshNewsUseCase,
     private val refreshNewsByCategoryUseCase: RefreshNewsByCategoryUseCase,
+    private val refreshNewsByDayUseCase: RefreshNewsByDayUseCase,
     private val refreshNewsByHostUseCase: RefreshNewsByHostUseCase,
     private val loadMoreNewsUseCase: LoadMoreNewsUseCase,
     private val getTrendStatsUseCase: GetTrendStatsUseCase
@@ -48,6 +50,7 @@ class HomeViewModel @Inject constructor(
         when (event) {
             is HomeUiEvent.OnCategorySelected -> selectCategory(event.category)
             is HomeUiEvent.OnSourceSelected -> selectSource(event.source)
+            is HomeUiEvent.OnDaySelected -> selectDay(event.day)
             HomeUiEvent.OnRetry -> refresh(isInitial = true)
             HomeUiEvent.OnRefresh -> refresh(isInitial = false)
             HomeUiEvent.OnLoadMore -> loadMore()
@@ -108,7 +111,28 @@ class HomeViewModel @Inject constructor(
     private fun loadSources() {
         viewModelScope.launch {
             val stats = getTrendStatsUseCase()
-            _uiState.update { it.copy(sources = stats.hosts.keys.toList()) }
+            _uiState.update {
+                it.copy(
+                    sources = stats.hosts.keys.toList(),
+                    trendByDay = stats.byDay
+                )
+            }
+        }
+    }
+
+    private fun selectDay(day: String?) {
+        _uiState.update { it.copy(selectedDay = day) }
+        if (day == null) return
+        refreshJob?.cancel()
+        refreshJob = viewModelScope.launch {
+            _uiState.update { it.copy(isRefreshing = true, error = null) }
+            try {
+                refreshNewsByDayUseCase(day)
+            } catch (e: Exception) {
+                _uiState.update { it.copy(error = e.message) }
+            } finally {
+                _uiState.update { it.copy(isRefreshing = false) }
+            }
         }
     }
 
@@ -131,7 +155,9 @@ class HomeViewModel @Inject constructor(
     private fun loadMore() {
         val state = _uiState.value
         if (state.isLoading || state.isLoadingMore) return
-        if (state.selectedCategory != null || state.selectedSource != null) return
+        if (state.selectedCategory != null || state.selectedSource != null ||
+            state.selectedDay != null
+        ) return
         viewModelScope.launch {
             _uiState.update { it.copy(isLoadingMore = true) }
             try {

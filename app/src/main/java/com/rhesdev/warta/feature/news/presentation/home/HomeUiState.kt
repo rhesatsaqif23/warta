@@ -8,6 +8,8 @@ data class HomeUiState(
     val selectedCategory: String? = null,
     val sources: List<String> = emptyList(),
     val selectedSource: String? = null,
+    val trendByDay: Map<String, Int> = emptyMap(),
+    val selectedDay: String? = null,
     val isLoading: Boolean = true,
     val isRefreshing: Boolean = false,
     val isLoadingMore: Boolean = false,
@@ -23,6 +25,10 @@ data class HomeUiState(
             .let { withCategory ->
                 if (selectedSource == null) withCategory
                 else withCategory.filter { it.link.contains(selectedSource) }
+            }
+            .let { withSource ->
+                if (selectedDay == null) withSource
+                else withSource.filter { it.isoDate.startsWith(selectedDay) }
             }
 
     val headlineNews: List<News> get() = filteredNews.take(3)

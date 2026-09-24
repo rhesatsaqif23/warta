@@ -11,7 +11,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 import javax.inject.Inject
+
+private val dayFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
 // Room + API repository implementing the domain contract.
 class NewsRepositoryImpl @Inject constructor(
@@ -73,10 +78,36 @@ class NewsRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun refreshNewsByDay(day: String) {
+        withContext(Dispatchers.IO) {
+            try {
+                val parsed = dayFormat.parse(day) ?: return@withContext
+                val next = dayFormat.format(
+                    Calendar.getInstance().apply {
+                        time = parsed
+                        add(Calendar.DAY_OF_MONTH, 1)
+                    }.time
+                )
+                val response = api.getNewsByDateRange(from = day, to = next)
+                dao.insertAll(response.results.map { it.toEntity() })
+            } catch (_: Exception) { }
+        }
+    }
+
     override suspend fun getTrendStats(): NewsStats {
         return withContext(Dispatchers.IO) {
             try {
                 api.getStats().toDomain()
+            } catch (_: Exception) {
+                NewsStats()
+            }
+        }
+    }
+
+    override suspend fun getSearchStats(query: String): NewsStats {
+        return withContext(Dispatchers.IO) {
+            try {
+                api.getStats(q = query).toDomain()
             } catch (_: Exception) {
                 NewsStats()
             }
