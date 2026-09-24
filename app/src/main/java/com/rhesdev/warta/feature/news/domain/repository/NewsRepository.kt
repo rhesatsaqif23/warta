@@ -14,5 +14,7 @@ interface NewsRepository {
 
     suspend fun refreshNews()
 
+    suspend fun refreshNewsByCategory(query: String, category: String)
+
     suspend fun searchAndRefresh(query: String)
 }

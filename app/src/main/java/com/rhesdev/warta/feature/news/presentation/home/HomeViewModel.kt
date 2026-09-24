@@ -3,7 +3,9 @@ package com.rhesdev.warta.feature.news.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rhesdev.warta.feature.news.domain.usecase.GetTopNewsUseCase
+import com.rhesdev.warta.feature.news.domain.usecase.RefreshNewsByCategoryUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.RefreshNewsUseCase
+import com.rhesdev.warta.feature.news.presentation.home.components.homeCategories
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getTopNewsUseCase: GetTopNewsUseCase,
-    private val refreshNewsUseCase: RefreshNewsUseCase
+    private val refreshNewsUseCase: RefreshNewsUseCase,
+    private val refreshNewsByCategoryUseCase: RefreshNewsByCategoryUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -33,11 +36,29 @@ class HomeViewModel @Inject constructor(
 
     fun onEvent(event: HomeUiEvent) {
         when (event) {
-            is HomeUiEvent.OnCategorySelected -> {
-                _uiState.update { it.copy(selectedCategory = event.category) }
-            }
+            is HomeUiEvent.OnCategorySelected -> selectCategory(event.category)
             HomeUiEvent.OnRetry -> refresh(isInitial = true)
             HomeUiEvent.OnRefresh -> refresh(isInitial = false)
+        }
+    }
+
+    private fun selectCategory(category: String?) {
+        _uiState.update { it.copy(selectedCategory = category) }
+        val query = homeCategories.firstOrNull { it.key == category }?.query
+        if (query == null || category == null) {
+            refresh(isInitial = false)
+        } else {
+            refreshJob?.cancel()
+            refreshJob = viewModelScope.launch {
+                _uiState.update { it.copy(isRefreshing = true, error = null) }
+                try {
+                    refreshNewsByCategoryUseCase(query, category)
+                } catch (e: Exception) {
+                    _uiState.update { it.copy(error = e.message) }
+                } finally {
+                    _uiState.update { it.copy(isRefreshing = false) }
+                }
+            }
         }
     }
 

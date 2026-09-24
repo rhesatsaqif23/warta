@@ -12,17 +12,17 @@ import com.rhesdev.warta.core.presentation.components.CategoryChip
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
 
 // Home category filter model and chips row.
-data class HomeCategory(val key: String?, val label: String)
+data class HomeCategory(val key: String?, val label: String, val query: String?)
 
 val homeCategories = listOf(
-    HomeCategory(null, "Semua"),
-    HomeCategory("society", "Nasional"),
-    HomeCategory("technology", "Teknologi"),
-    HomeCategory("economy", "Ekonomi"),
-    HomeCategory("sports", "Olahraga"),
-    HomeCategory("entertainment", "Hiburan"),
-    HomeCategory("politics", "Politik"),
-    HomeCategory("health", "Kesehatan")
+    HomeCategory(null, "Semua", null),
+    HomeCategory("society", "Nasional", "nasional"),
+    HomeCategory("technology", "Teknologi", "teknologi"),
+    HomeCategory("economy", "Ekonomi", "ekonomi"),
+    HomeCategory("sports", "Olahraga", "olahraga"),
+    HomeCategory("entertainment", "Hiburan", "hiburan"),
+    HomeCategory("politics", "Politik", "politik"),
+    HomeCategory("health", "Kesehatan", "kesehatan")
 )
 
 @Composable

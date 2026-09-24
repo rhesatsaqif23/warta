@@ -45,6 +45,15 @@ class NewsRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun refreshNewsByCategory(query: String, category: String) {
+        withContext(Dispatchers.IO) {
+            try {
+                val response = api.searchNews(query)
+                dao.insertAll(response.results.map { it.toEntity().copy(category = category) })
+            } catch (_: Exception) { }
+        }
+    }
+
     override suspend fun searchAndRefresh(query: String) {
         withContext(Dispatchers.IO) {
             try {
