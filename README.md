@@ -20,34 +20,38 @@ Aplikasi agregator berita Indonesia berbasis *Offline-First* yang menyajikan ber
 
 | Layer | Technology |
 |-------|------------|
-| Language | Kotlin |
+| Language | Kotlin (2.2) |
 | UI | Jetpack Compose + Material 3 |
 | Architecture | Clean Architecture + MVVM |
-| DI | Dagger Hilt |
+| DI | Dagger Hilt (+ Hilt-Work) |
 | Local DB | Room Database (v2, with migration) |
-| Network | Retrofit + OkHttp |
-| Background Work | WorkManager + Hilt |
-| Image Loading | Coil (+ shimmer/error placeholders) |
-| Navigation | Jetpack Navigation Compose |
+| Network | Retrofit + OkHttp + Gson |
+| Background Work | WorkManager (periodic refresh) |
+| Image Loading | Coil (shimmer/error placeholders) |
+| Navigation | Multi-Activity via Splitties behind a `WartaNavigator` shield (no Navigation Compose) |
+| Dispatchers | Injected qualifiers (`@IoDispatcher` etc.) — no hardcoded `Dispatchers.IO` |
 
 ## Project Structure
 
 ```
 app/src/main/java/com/rhesdev/warta/
 ├── core/
-│   ├── di/                   # Hilt modules (network, database, repository)
-│   └── presentation/         # Theme + generic design-system components
+│   ├── di/                   # Hilt modules (NewsModule, DispatcherModule)
+│   ├── presentation/         # Theme + design-system components + tab host
+│   └── utils/                # Intent-extra keys, AppError, Dimens, DateFormatter
 ├── feature/
 │   ├── news/
 │   │   ├── data/             # Room, Retrofit DTOs, mappers, repository impl, worker
 │   │   ├── domain/           # Pure-Kotlin models, repository contract, use cases
 │   │   └── presentation/     # home/ search/ detail/ category/ screens
-│   └── splash/               # Splash screen
-└── navigation/               # Routes, NavGraph (Scaffold + bottom bar)
+│   ├── profile/              # Profile tab (placeholder)
+│   └── splash/               # App entry (presentation only)
+└── navigation/
+    └── WartaNavigator.kt     # Sole shield for launching Activities (Splitties)
 ```
 
 One capability = one feature: `news` owns its table, repository, use cases,
-and every screen over them. See `ARCHITECTURE.md` and `docs/ARCHITECTURE_SUMMARY.md`.
+worker, and every screen over them. See `ARCHITECTURE.md` and `docs/ARCHITECTURE_SUMMARY.md`.
 
 ## Getting Started
 

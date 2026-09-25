@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.GridView
@@ -23,10 +24,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.annotation.StringRes
 import com.rhesdev.warta.R
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
+import com.rhesdev.warta.core.utils.Dimens
 
 data class BottomNavItem(
     val route: String,
@@ -53,7 +54,7 @@ fun WartaBottomNavigationBar(
             .background(MaterialTheme.colorScheme.surface)
     ) {
         HorizontalDivider(
-            thickness = 1.dp,
+            thickness = Dimens.defaultStroke,
             color = MaterialTheme.colorScheme.outlineVariant
         )
         Row(
@@ -68,22 +69,23 @@ fun WartaBottomNavigationBar(
                     modifier = Modifier
                         .weight(1f)
                         .clickable(onClick = { onItemClick(item.route) })
-                        .padding(vertical = 4.dp),
+                        .padding(vertical = Dimens.xxsPadding),
                     contentAlignment = Alignment.Center
                 ) {
                     Box(
                         modifier = Modifier
-                            .clip(RoundedCornerShape(40.dp))
+                            .clip(RoundedCornerShape(Dimens.pillRadius))
                             .then(
                                 if (selected) Modifier.background(
                                     MaterialTheme.colorScheme.primaryContainer
                                 ) else Modifier
                             )
-                            .padding(12.dp)
+                            .padding(Dimens.customPaddingLabel)
                     ) {
                         Icon(
                             imageVector = item.icon,
                             contentDescription = stringResource(item.labelRes),
+                            modifier = Modifier.size(Dimens.defaultIconSize),
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }

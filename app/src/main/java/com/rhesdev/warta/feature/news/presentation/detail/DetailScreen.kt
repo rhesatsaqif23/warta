@@ -28,17 +28,17 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rhesdev.warta.R
 import com.rhesdev.warta.core.presentation.components.ErrorState
 import com.rhesdev.warta.core.presentation.components.LoadingScreen
+import com.rhesdev.warta.core.presentation.components.WartaTopBar
 import com.rhesdev.warta.core.presentation.theme.Accent
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
 import com.rhesdev.warta.core.utils.DateFormatter
+import com.rhesdev.warta.core.utils.Dimens
 import com.rhesdev.warta.feature.news.domain.model.News
 import com.rhesdev.warta.feature.news.presentation.components.NewsImage
-import com.rhesdev.warta.core.presentation.components.WartaTopBar
 
 @Composable
 fun DetailScreen(
@@ -152,20 +152,20 @@ private fun NewsDetailContent(
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(250.dp)
+                .height(Dimens.detailHeroHeight)
         )
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(Dimens.smallPadding)) {
             Text(
                 text = news.category.uppercase(),
                 style = MaterialTheme.typography.titleSmall,
                 color = Accent
             )
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(Dimens.xsMargin))
             Text(
                 text = news.title,
                 style = MaterialTheme.typography.titleLarge
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(Dimens.smallMargin))
             Text(
                 text = news.source,
                 style = MaterialTheme.typography.titleSmall,
@@ -176,13 +176,13 @@ private fun NewsDetailContent(
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(Dimens.defaultMargin))
             val bodyText = fullText ?: news.contentSnippet
             Text(
                 text = highlightDateline(bodyText, Accent),
                 style = MaterialTheme.typography.bodyLarge
             )
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(Dimens.bigMargin))
             when {
                 isLoadingBody -> LoadingScreen()
                 fullText != null -> {

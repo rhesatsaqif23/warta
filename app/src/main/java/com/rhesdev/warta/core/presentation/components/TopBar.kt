@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
@@ -15,9 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.rhesdev.warta.R
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
+import com.rhesdev.warta.core.utils.Dimens
 
 // App top bar: logo on main screens, back arrow on nested screens.
 @Composable
@@ -31,7 +32,7 @@ fun WartaTopBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = Dimens.smallPadding, vertical = Dimens.xsPadding),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (onBackClick != null) {
@@ -39,23 +40,25 @@ fun WartaTopBar(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(R.string.cd_back),
+                    modifier = Modifier.size(Dimens.defaultIconSize),
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
         } else {
-            WartaFullLogo(width = 80.dp)
+            WartaFullLogo(width = Dimens.compactLogoWidth)
         }
         SearchField(
             onClick = onSearchClick,
             modifier = Modifier
                 .weight(1f)
-                .padding(horizontal = 12.dp)
+                .padding(horizontal = Dimens.customPaddingLabel)
         )
         actions()
         IconButton(onClick = onMenuClick) {
             Icon(
                 imageVector = Icons.Default.MoreVert,
                 contentDescription = stringResource(R.string.cd_menu),
+                modifier = Modifier.size(Dimens.defaultIconSize),
                 tint = MaterialTheme.colorScheme.primary
             )
         }

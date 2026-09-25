@@ -19,9 +19,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
+import com.rhesdev.warta.core.utils.Dimens
 
 // Shared full-screen empty state with optional illustration.
 @Composable
@@ -31,7 +31,7 @@ fun EmptyState(
     modifier: Modifier = Modifier,
     icon: ImageVector = Icons.Outlined.Inbox,
     illustrationModel: Any? = null,
-    illustrationSize: Dp = 160.dp
+    illustrationSize: Dp = Dimens.illustrationSize
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
@@ -49,17 +49,17 @@ fun EmptyState(
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                modifier = Modifier.size(80.dp),
+                modifier = Modifier.size(Dimens.stateIconSize),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(Dimens.xlMargin))
         Text(
             text = title,
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onSurface
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(Dimens.defaultMargin))
         Text(
             text = message,
             style = MaterialTheme.typography.bodyLarge,

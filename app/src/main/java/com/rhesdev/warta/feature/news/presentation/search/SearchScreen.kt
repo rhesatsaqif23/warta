@@ -31,7 +31,6 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rhesdev.warta.R
 import com.rhesdev.warta.core.presentation.components.EditableSearchField
@@ -40,6 +39,7 @@ import com.rhesdev.warta.core.presentation.components.ErrorState
 import com.rhesdev.warta.core.presentation.components.LoadingScreen
 import com.rhesdev.warta.core.presentation.theme.Primary
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
+import com.rhesdev.warta.core.utils.Dimens
 import com.rhesdev.warta.feature.news.domain.model.News
 import com.rhesdev.warta.feature.news.presentation.components.TrendingNewsItem
 import com.rhesdev.warta.feature.news.presentation.home.components.HomeCategoryRow
@@ -71,7 +71,7 @@ fun SearchScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                    .padding(horizontal = Dimens.smallPadding, vertical = Dimens.xsPadding),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = onBackClick) {
@@ -87,7 +87,7 @@ fun SearchScreen(
                     onClearClick = { viewModel.onEvent(SearchUiEvent.OnClearQuery) },
                     modifier = Modifier
                         .weight(1f)
-                        .padding(horizontal = 12.dp)
+                        .padding(horizontal = Dimens.customPaddingLabel)
                         .focusRequester(focusRequester),
                     focusRequester = focusRequester
                 )
@@ -131,7 +131,7 @@ fun SearchContent(
                 val category = homeCategories.firstOrNull { it.key == key }
                 onEvent(SearchUiEvent.OnQueryChanged(category?.query ?: ""))
             },
-            modifier = Modifier.padding(vertical = 8.dp)
+            modifier = Modifier.padding(vertical = Dimens.xsPadding)
         )
         if (uiState.query.isNotBlank()) {
             Text(
@@ -141,7 +141,7 @@ fun SearchContent(
                     append(stringResource(R.string.search_for_suffix))
                 },
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                modifier = Modifier.padding(horizontal = Dimens.smallPadding, vertical = Dimens.xsPadding)
             )
         }
         when {
@@ -162,8 +162,8 @@ fun SearchContent(
             }
             else -> {
                 LazyColumn(
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    contentPadding = PaddingValues(horizontal = Dimens.smallPadding, vertical = Dimens.xsPadding),
+                    verticalArrangement = Arrangement.spacedBy(Dimens.defaultMargin)
                 ) {
                     items(uiState.results, key = { it.link }) { news ->
                         TrendingNewsItem(

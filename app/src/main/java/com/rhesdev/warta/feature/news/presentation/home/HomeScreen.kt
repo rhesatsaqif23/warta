@@ -21,21 +21,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rhesdev.warta.R
 import com.rhesdev.warta.core.presentation.components.EmptyState
 import com.rhesdev.warta.core.presentation.components.ErrorState
 import com.rhesdev.warta.core.presentation.components.LoadingScreen
+import com.rhesdev.warta.core.presentation.theme.WartaTheme
+import com.rhesdev.warta.core.utils.Dimens
+import com.rhesdev.warta.feature.news.domain.model.News
 import com.rhesdev.warta.feature.news.presentation.components.HeadlineCard
 import com.rhesdev.warta.feature.news.presentation.components.PopularNewsCard
 import com.rhesdev.warta.feature.news.presentation.components.SectionHeader
 import com.rhesdev.warta.feature.news.presentation.components.TrendingNewsItem
-import com.rhesdev.warta.core.presentation.theme.WartaTheme
 import com.rhesdev.warta.feature.news.presentation.home.components.HomeCategoryRow
 import com.rhesdev.warta.feature.news.presentation.home.components.TrendStrip
 import com.rhesdev.warta.feature.news.presentation.home.components.homeCategories
-import com.rhesdev.warta.feature.news.domain.model.News
 
 // Home screen wiring state to content plus previews.
 @Composable
@@ -69,7 +69,7 @@ fun HomeContent(
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(Dimens.defaultMargin)
         ) {
         item {
             HomeCategoryRow(
@@ -136,8 +136,8 @@ private fun LazyListScope.NewsSections(
 ) {
     item {
         LazyRow(
-            contentPadding = PaddingValues(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            contentPadding = PaddingValues(horizontal = Dimens.smallPadding),
+            horizontalArrangement = Arrangement.spacedBy(Dimens.custom12dpMargin)
         ) {
             items(uiState.headlineNews, key = { it.link }) { news ->
                 HeadlineCard(
@@ -152,7 +152,7 @@ private fun LazyListScope.NewsSections(
         item {
             SectionHeader(
                 stringResource(R.string.section_popular_now),
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(horizontal = Dimens.smallPadding)
             )
         }
         item {
@@ -160,7 +160,7 @@ private fun LazyListScope.NewsSections(
                 news = popular,
                 onClick = { onNewsClick(popular.link) },
                 onShareClick = { },
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(horizontal = Dimens.smallPadding)
             )
         }
     }
@@ -169,14 +169,14 @@ private fun LazyListScope.NewsSections(
         item {
             SectionHeader(
                 stringResource(R.string.section_trending_now),
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(horizontal = Dimens.smallPadding)
             )
         }
         items(uiState.trendingNews, key = { it.link }) { news ->
             TrendingNewsItem(
                 news = news,
                 onClick = { onNewsClick(news.link) },
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(horizontal = Dimens.smallPadding)
             )
         }
     }
@@ -189,7 +189,7 @@ private fun LazyListScope.NewsSections(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(Dimens.smallPadding),
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator()

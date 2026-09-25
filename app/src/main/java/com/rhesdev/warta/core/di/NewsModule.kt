@@ -18,6 +18,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 // Hilt module for news feature dependencies.
 @Module
@@ -25,6 +26,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 object NewsModule {
 
     private const val BASE_URL = "https://freenewsapi.ai/v1/"
+    private const val CONNECT_TIMEOUT: Long = 30
+    private const val READ_TIMEOUT: Long = 30
+    private const val WRITE_TIMEOUT: Long = 30
 
     @Provides
     @Singleton
@@ -34,6 +38,12 @@ object NewsModule {
         }
         return OkHttpClient.Builder()
             .addInterceptor(logging)
+            .followRedirects(true)
+            .followSslRedirects(true)
+            .retryOnConnectionFailure(true)
+            .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
+            .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)
+            .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
             .build()
     }
 

@@ -12,6 +12,8 @@
 * **Description:** Aplikasi agregator berita Indonesia berbasis *Offline-First* yang menyajikan berita terkini berbahasa Indonesia dalam antarmuka modern.
 * **Architecture Pattern:** Clean Architecture (Data - Domain - Presentation) + MVVM.
 * **UI Framework:** Jetpack Compose (100%).
+* **SDK:** Minimum 26 (Android 8.0), target/compile 37.
+* **Navigation:** Multi-Activity (satu screen = satu Activity) di belakang navigation shield `WartaNavigator` — tanpa Navigation Compose.
 
 ---
 
@@ -26,8 +28,11 @@ AI Agent **wajib** menggunakan pustaka berikut dengan versi stabil (atau BOM ter
 * **Networking:** Retrofit2 + OkHttp3 (Logging Interceptor) + Gson
 * **Background Work:** WorkManager (periodic refresh 30 menit, hanya saat online)
 * **Asynchronous / Reactive:** Kotlin Coroutines & `StateFlow`
-* **Image Loading:** Coil (`SubcomposeAsyncImage` + shimmer/error placeholder)
-* **Navigation:** Jetpack Navigation Compose
+* **Dispatchers:** di-inject via qualifier (`@IoDispatcher` dkk. dari `core/di/DispatcherModule.kt`) — dilarang hardcode `Dispatchers.IO`
+* **Image Loading:** Coil (`AsyncImage` + shimmer/error placeholder)
+* **Navigation:** Multi-Activity — satu screen satu Activity, semua dibuka lewat shield `navigation/WartaNavigator.kt` memakai Splitties typed start (`context.start<T>{}`); tanpa Navigation Compose
+* **Strings/Resources:** semua teks user-facing + `contentDescription` dari `res/values/strings.xml` via `stringResource(R.string.*)`; warna hanya dari `core/presentation/theme`
+* **Error Handling:** dipusatkan di `core/utils/AppError.kt` (`Throwable.toUserMessage()`) — ViewModel tidak pernah menampilkan `e.message` mentah
 
 ---
 
@@ -43,6 +48,8 @@ AI Agent harus mematuhi aturan ketat berikut:
 4. **State Management:** Setiap Screen harus memiliki 1 `ViewModel`, 1 `data class UiState` (loading, data, error), dan 1 `sealed interface UiEvent`; UI memanggil satu pintu `onEvent()`.
 5. **UI Component:** Composable dilarang memuat *business logic*. Side effect (Intent, navigasi) di-hoist ke `Screen`; `Content` murni menerima state + callback. Pisahkan `Screen` (punya ViewModel) dan `Content` (previewable). Setiap file hanya boleh punya satu komentar `//` baris-tunggal berisi tujuan file.
 6. **Dependency Direction:** `core` tidak boleh mengimpor paket `feature`. Komponen yang me-render model domain tinggal di feature.
+7. **Navigation Discipline:** Semua Activity internal hanya dibuka lewat `navigation/WartaNavigator.kt` (Splitties typed start). Intent extras ≤7, key-nya terpusat di `core/utils/Constants.kt`; payload berat = satu string JSON (Gson). Tab `singleTask`.
+8. **Resources & Errors:** Tidak ada string/`contentDescription` hardcoded — dari `res/values/strings.xml`. Tidak ada `x.dp`/`x.sp` hardcoded di Composable — dimensi memakai token `core/utils/Dimens.kt` (skala movieApp + ukuran khas Warta; tambahkan token baru bila ukuran belum ada). Memakai `@IoDispatcher` (dll.) yang di-inject, bukan `Dispatchers.IO`. Error memakai `Throwable.toUserMessage()`.
 
 ---
 
@@ -132,6 +139,7 @@ Migrasi `MIGRATION_1_2` (`ALTER TABLE ... ADD COLUMN`) wajib didaftarkan di Hilt
 Fase 1–6 (init, data, domain, design system, presentation, navigation) dan integrasi API (search/stats/article) **sudah selesai**. Untuk pekerjaan lanjutan:
 
 * Ikuti pola yang ada: 1 UseCase = 1 tugas (`operator fun invoke`), 1 UiState + 1 UiEvent per screen, observe Room sekali di `init`, filter di derived state.
+* Activity baru **wajib** dibuka lewat `WartaNavigator`; jangan menambah ketergantungan Navigation Compose.
 * Hapus kode mati beserta rantainya (UseCase, repo method, DAO query, endpoint) alih-alih membiarkannya.
-* Perbarui `docs/` (`DATA_LAYER`, `DOMAIN_LAYER`, `PRESENTATION_LAYER`, `DATA_FLOW`, `ARCHITECTURE_SUMMARY`) setiap kali kontrak berubah.
+* Perbarui `docs/` (`DATA_LAYER`, `DOMAIN_LAYER`, `PRESENTATION_LAYER`, `DATA_FLOW`, `ARCHITECTURE_SUMMARY`, `conventions/NAVIGATION.md`) setiap kali kontrak berubah.
 * Jangan menyebut terminologi "Phase X" di commit message — deskripsikan perubahannya.

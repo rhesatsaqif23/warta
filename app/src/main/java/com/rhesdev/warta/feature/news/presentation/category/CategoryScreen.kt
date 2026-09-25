@@ -31,6 +31,7 @@ import com.rhesdev.warta.core.presentation.components.ErrorState
 import com.rhesdev.warta.core.presentation.components.LoadingScreen
 import com.rhesdev.warta.core.presentation.theme.Accent
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
+import com.rhesdev.warta.core.utils.Dimens
 import com.rhesdev.warta.feature.news.domain.model.News
 import com.rhesdev.warta.feature.news.presentation.components.SectionHeader
 import com.rhesdev.warta.feature.news.presentation.components.TrendingNewsItem
@@ -76,7 +77,7 @@ fun CategoryContent(
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(vertical = 16.dp)
+            contentPadding = PaddingValues(vertical = Dimens.smallPadding)
         ) {
         when {
             uiState.isLoading -> item {
@@ -137,15 +138,15 @@ private fun LazyListScope.CategorySections(
                 title = stringResource(section.labelRes),
                 icon = Icons.Outlined.GridView,
                 modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .padding(top = if (index == 0) 0.dp else 12.dp)
+                    .padding(horizontal = Dimens.smallPadding)
+                    .padding(top = if (index == 0) 0.dp else Dimens.customPaddingLabel)
             )
         }
         items(section.articles, key = { it.link }) { news ->
             TrendingNewsItem(
                 news = news,
                 onClick = { onNewsClick(news.link) },
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
+                modifier = Modifier.padding(horizontal = Dimens.smallPadding, vertical = Dimens.customSmallPaddingLabel)
             )
         }
         if (!section.expanded && section.total > section.articles.size) {
@@ -153,7 +154,7 @@ private fun LazyListScope.CategorySections(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 2.dp),
+                        .padding(horizontal = Dimens.smallPadding, vertical = Dimens.xxxsPadding),
                     contentAlignment = Alignment.CenterEnd
                 ) {
                     TextButton(onClick = { onEvent(CategoryUiEvent.OnToggleExpand(section.key)) }) {

@@ -12,10 +12,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.rhesdev.warta.core.presentation.components.ShimmerBox
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
+import com.rhesdev.warta.core.utils.Dimens
 
 // News image with shimmer loading and placeholder fallback.
 @Composable
@@ -50,7 +50,7 @@ private fun PlaceholderBox(modifier: Modifier = Modifier) {
         Icon(
             imageVector = Icons.Default.BrokenImage,
             contentDescription = null,
-            modifier = Modifier.size(32.dp),
+            modifier = Modifier.size(Dimens.bigIconSize),
             tint = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
@@ -63,7 +63,7 @@ private fun NewsImageFallbackPreview() {
         NewsImage(
             imageUrl = "",
             contentDescription = null,
-            modifier = Modifier.size(width = 138.dp, height = 84.dp)
+            modifier = Modifier.size(width = Dimens.newsThumbWidth, height = Dimens.newsThumbHeight)
         )
     }
 }

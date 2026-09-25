@@ -26,9 +26,9 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.rhesdev.warta.R
 import com.rhesdev.warta.core.presentation.theme.OutlineVariant
+import com.rhesdev.warta.core.utils.Dimens
 
 // Read-only search field that navigates to Search screen on tap.
 @Composable
@@ -45,6 +45,7 @@ fun SearchField(onClick: () -> Unit, modifier: Modifier = Modifier) {
         Icon(
             Icons.Default.Search,
             contentDescription = stringResource(R.string.cd_search),
+            modifier = Modifier.size(Dimens.defaultIconSize),
             tint = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
@@ -89,7 +90,7 @@ fun EditableSearchField(
             )
         }
         Box(
-            modifier = Modifier.size(32.dp),
+            modifier = Modifier.size(Dimens.xsHeight),
             contentAlignment = Alignment.Center
         ) {
             if (value.isNotEmpty()) {
@@ -97,12 +98,15 @@ fun EditableSearchField(
                     imageVector = Icons.Default.Clear,
                     contentDescription = stringResource(R.string.cd_clear),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.clickable(onClick = onClearClick)
+                    modifier = Modifier
+                        .clickable(onClick = onClearClick)
+                        .size(Dimens.defaultIconSize)
                 )
             } else {
                 Icon(
                     imageVector = Icons.Default.Search,
                     contentDescription = stringResource(R.string.cd_search),
+                    modifier = Modifier.size(Dimens.defaultIconSize),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
@@ -117,9 +121,9 @@ private fun SearchFieldContainer(
 ) {
     Row(
         modifier = modifier
-            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(40.dp))
-            .border(BorderStroke(1.dp, OutlineVariant), RoundedCornerShape(40.dp))
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(Dimens.pillRadius))
+            .border(BorderStroke(Dimens.defaultStroke, OutlineVariant), RoundedCornerShape(Dimens.pillRadius))
+            .padding(horizontal = Dimens.smallPadding, vertical = Dimens.xsPadding)
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         content = content
