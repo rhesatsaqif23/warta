@@ -41,8 +41,7 @@ app/src/main/java/com/rhesdev/warta/
 │   ├── category/           # Category screen
 │   └── splash/             # Splash screen
 └── navigation/
-    ├── Routes.kt           # Route definitions
-    └── WartaNavGraph.kt    # NavHost configuration
+    └── WartaNavigator.kt     # Activity navigation shield (multi-Activity pattern)
 ```
 
 ## 4. Asynchronous Programming
@@ -54,7 +53,9 @@ app/src/main/java/com/rhesdev/warta/
 ## 5. UI Framework
 
 - **Jetpack Compose:** Default for all screens. Material Design 3.
-- **Navigation:** Jetpack Navigation Compose with string-based routes.
+- **Navigation:** Multi-Activity pattern — one Activity per screen, launched via the `WartaNavigator`
+  shield (`navigation/WartaNavigator.kt`). No Navigation Compose. Intent extras only (≤7, JSON for
+  heavy payloads). See `docs/conventions/NAVIGATION.md`.
 - **Image Loading:** Coil (`AsyncImage`).
 - **State Collection:** `collectAsState()` in Composables.
 
