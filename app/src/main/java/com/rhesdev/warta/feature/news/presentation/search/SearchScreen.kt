@@ -48,10 +48,17 @@ import com.rhesdev.warta.feature.news.presentation.home.components.homeCategorie
 fun SearchScreen(
     viewModel: SearchViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
-    onNewsClick: (String) -> Unit
+    onNewsClick: (String) -> Unit,
+    initialQuery: String? = null
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(initialQuery) {
+        if (!initialQuery.isNullOrBlank()) {
+            viewModel.onEvent(SearchUiEvent.OnQueryChanged(initialQuery))
+        }
+    }
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()

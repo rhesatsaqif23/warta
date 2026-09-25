@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.rhesdev.warta.core.presentation.components.WartaTabHost
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
+import com.rhesdev.warta.core.utils.ITEM_EXTRA_CATEGORY
 import com.rhesdev.warta.navigation.WartaNavigator
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -14,6 +15,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class CategoryActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val incomingCategory = intent.getStringExtra(ITEM_EXTRA_CATEGORY)
         enableEdgeToEdge()
         setContent {
             WartaTheme {
@@ -30,6 +32,7 @@ class CategoryActivity : ComponentActivity() {
                 ) { modifier ->
                     CategoryScreen(
                         onNewsClick = { link -> WartaNavigator.openDetail(this, link) },
+                        initialCategory = incomingCategory,
                         modifier = modifier
                     )
                 }

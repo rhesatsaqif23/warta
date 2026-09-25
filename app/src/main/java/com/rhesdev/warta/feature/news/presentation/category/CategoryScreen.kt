@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -31,15 +32,24 @@ import com.rhesdev.warta.core.presentation.theme.WartaTheme
 import com.rhesdev.warta.feature.news.domain.model.News
 import com.rhesdev.warta.feature.news.presentation.components.SectionHeader
 import com.rhesdev.warta.feature.news.presentation.components.TrendingNewsItem
+import com.rhesdev.warta.feature.news.presentation.home.components.homeCategories
 
 // Category screen grouping articles into expandable per-category sections.
 @Composable
 fun CategoryScreen(
     viewModel: CategoryViewModel = hiltViewModel(),
     onNewsClick: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    initialCategory: String? = null
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(initialCategory) {
+        val key = initialCategory ?: return@LaunchedEffect
+        if (homeCategories.any { it.key == key }) {
+            viewModel.onEvent(CategoryUiEvent.OnToggleExpand(key))
+        }
+    }
 
     CategoryContent(
         uiState = uiState,
