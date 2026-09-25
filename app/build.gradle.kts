@@ -87,6 +87,9 @@ dependencies {
     // Coil
     implementation(libs.coil.compose)
 
+    // Splitties (type-safe activity starts)
+    implementation(libs.splitties.activities)
+
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))

@@ -20,6 +20,7 @@ work = "2.9.0"
 hiltWork = "1.2.0"
 lifecycleViewmodelCompose = "2.9.1"
 lifecycleRuntimeCompose = "2.9.1"
+splitties = "3.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -67,6 +68,9 @@ navigation-compose = { group = "androidx.navigation", name = "navigation-compose
 # Lifecycle
 lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
+
+# Splitties
+splitties-activities = { group = "com.louiscad.splitties", name = "splitties-activities", version.ref = "splitties" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

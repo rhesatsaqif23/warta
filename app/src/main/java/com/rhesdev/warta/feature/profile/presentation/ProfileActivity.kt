@@ -1,6 +1,5 @@
 package com.rhesdev.warta.feature.profile.presentation
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,9 +9,7 @@ import androidx.compose.material.icons.outlined.Person
 import com.rhesdev.warta.core.presentation.components.EmptyState
 import com.rhesdev.warta.core.presentation.components.WartaTabHost
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
-import com.rhesdev.warta.feature.news.presentation.category.CategoryActivity
-import com.rhesdev.warta.feature.news.presentation.home.HomeActivity
-import com.rhesdev.warta.feature.news.presentation.search.SearchActivity
+import com.rhesdev.warta.navigation.WartaNavigator
 import dagger.hilt.android.AndroidEntryPoint
 
 // Profile tab activity with placeholder content for now.
@@ -25,8 +22,14 @@ class ProfileActivity : ComponentActivity() {
             WartaTheme {
                 WartaTabHost(
                     currentTab = "profile",
-                    onItemClick = ::openTab,
-                    onSearchClick = { openSearch() }
+                    onItemClick = { route ->
+                        when (route) {
+                            "home" -> WartaNavigator.openHome(this)
+                            "category" -> WartaNavigator.openCategory(this)
+                            else -> WartaNavigator.openProfile(this)
+                        }
+                    },
+                    onSearchClick = { WartaNavigator.openSearch(this) }
                 ) { modifier ->
                     EmptyState(
                         title = "Profil",
@@ -37,18 +40,5 @@ class ProfileActivity : ComponentActivity() {
                 }
             }
         }
-    }
-
-    private fun openTab(route: String) {
-        val target = when (route) {
-            "home" -> HomeActivity::class.java
-            "category" -> CategoryActivity::class.java
-            else -> ProfileActivity::class.java
-        }
-        startActivity(Intent(this, target))
-    }
-
-    private fun openSearch() {
-        startActivity(Intent(this, SearchActivity::class.java))
     }
 }

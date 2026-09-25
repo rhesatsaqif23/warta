@@ -1,12 +1,11 @@
 package com.rhesdev.warta.feature.splash.presentation
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
-import com.rhesdev.warta.feature.news.presentation.home.HomeActivity
+import com.rhesdev.warta.navigation.WartaNavigator
 import dagger.hilt.android.AndroidEntryPoint
 
 // Launcher activity showing the splash screen before Home.
@@ -19,7 +18,7 @@ class SplashActivity : ComponentActivity() {
             WartaTheme {
                 SplashScreen(
                     onNavigateToHome = {
-                        startActivity(Intent(this, HomeActivity::class.java))
+                        WartaNavigator.openHome(this)
                         finish()
                     }
                 )

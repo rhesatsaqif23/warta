@@ -1,16 +1,12 @@
 package com.rhesdev.warta.feature.news.presentation.category
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.rhesdev.warta.core.presentation.components.WartaTabHost
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
-import com.rhesdev.warta.feature.news.presentation.detail.DetailActivity
-import com.rhesdev.warta.feature.news.presentation.home.HomeActivity
-import com.rhesdev.warta.feature.profile.presentation.ProfileActivity
-import com.rhesdev.warta.feature.news.presentation.search.SearchActivity
+import com.rhesdev.warta.navigation.WartaNavigator
 import dagger.hilt.android.AndroidEntryPoint
 
 // Category tab activity grouping articles into per-category sections.
@@ -23,36 +19,21 @@ class CategoryActivity : ComponentActivity() {
             WartaTheme {
                 WartaTabHost(
                     currentTab = "category",
-                    onItemClick = ::openTab,
-                    onSearchClick = { openSearch() }
+                    onItemClick = { route ->
+                        when (route) {
+                            "home" -> WartaNavigator.openHome(this)
+                            "profile" -> WartaNavigator.openProfile(this)
+                            else -> WartaNavigator.openCategory(this)
+                        }
+                    },
+                    onSearchClick = { WartaNavigator.openSearch(this) }
                 ) { modifier ->
                     CategoryScreen(
-                        onNewsClick = ::openDetail,
+                        onNewsClick = { link -> WartaNavigator.openDetail(this, link) },
                         modifier = modifier
                     )
                 }
             }
         }
-    }
-
-    private fun openTab(route: String) {
-        val target = when (route) {
-            "home" -> HomeActivity::class.java
-            "profile" -> ProfileActivity::class.java
-            else -> CategoryActivity::class.java
-        }
-        startActivity(Intent(this, target))
-    }
-
-    private fun openDetail(link: String) {
-        startActivity(
-            Intent(this, DetailActivity::class.java).apply {
-                putExtra(DetailActivity.EXTRA_LINK, link)
-            }
-        )
-    }
-
-    private fun openSearch() {
-        startActivity(Intent(this, SearchActivity::class.java))
     }
 }
