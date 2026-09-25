@@ -29,7 +29,6 @@ import com.rhesdev.warta.feature.news.presentation.components.HeadlineCard
 import com.rhesdev.warta.feature.news.presentation.components.PopularNewsCard
 import com.rhesdev.warta.feature.news.presentation.components.SectionHeader
 import com.rhesdev.warta.feature.news.presentation.components.TrendingNewsItem
-import com.rhesdev.warta.core.presentation.components.WartaTopBar
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
 import com.rhesdev.warta.feature.news.presentation.home.components.HomeCategoryRow
 import com.rhesdev.warta.feature.news.presentation.home.components.TrendStrip
@@ -41,7 +40,7 @@ import com.rhesdev.warta.feature.news.domain.model.News
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     onNewsClick: (String) -> Unit,
-    onSearchClick: () -> Unit
+    modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -49,7 +48,7 @@ fun HomeScreen(
         uiState = uiState,
         onEvent = viewModel::onEvent,
         onNewsClick = onNewsClick,
-        onSearchClick = onSearchClick
+        modifier = modifier
     )
 }
 
@@ -59,7 +58,6 @@ fun HomeContent(
     uiState: HomeUiState,
     onEvent: (HomeUiEvent) -> Unit,
     onNewsClick: (String) -> Unit,
-    onSearchClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     PullToRefreshBox(
@@ -71,10 +69,6 @@ fun HomeContent(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-        item {
-            WartaTopBar(onSearchClick = onSearchClick)
-        }
-
         item {
             HomeCategoryRow(
                 categories = homeCategories,
@@ -266,8 +260,7 @@ private fun HomeContentPreview() {
                 isLoading = false
             ),
             onEvent = {},
-            onNewsClick = {},
-            onSearchClick = {}
+            onNewsClick = {}
         )
     }
 }
@@ -279,8 +272,7 @@ private fun HomeContentLoadingPreview() {
         HomeContent(
             uiState = HomeUiState(isLoading = true),
             onEvent = {},
-            onNewsClick = {},
-            onSearchClick = {}
+            onNewsClick = {}
         )
     }
 }
@@ -292,8 +284,7 @@ private fun HomeContentErrorPreview() {
         HomeContent(
             uiState = HomeUiState(error = "Gagal memuat berita"),
             onEvent = {},
-            onNewsClick = {},
-            onSearchClick = {}
+            onNewsClick = {}
         )
     }
 }
@@ -305,8 +296,7 @@ private fun HomeContentEmptyPreview() {
         HomeContent(
             uiState = HomeUiState(isLoading = false),
             onEvent = {},
-            onNewsClick = {},
-            onSearchClick = {}
+            onNewsClick = {}
         )
     }
 }

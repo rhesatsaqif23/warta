@@ -15,6 +15,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -40,9 +41,11 @@ import com.rhesdev.warta.core.presentation.components.WartaTopBar
 @Composable
 fun DetailScreen(
     viewModel: DetailViewModel = hiltViewModel(),
+    newsLink: String,
     onBackClick: () -> Unit,
     onSearchClick: () -> Unit = {}
 ) {
+    LaunchedEffect(newsLink) { viewModel.loadNewsDetail(newsLink) }
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
 
