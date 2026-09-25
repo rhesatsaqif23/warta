@@ -2,45 +2,44 @@ package com.rhesdev.warta.feature.news.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.rhesdev.warta.core.utils.toUserMessage
-import com.rhesdev.warta.feature.news.domain.usecase.GetTopNewsUseCase
+import com.rhesdev.warta.feature.news.domain.model.News
+import com.rhesdev.warta.feature.news.domain.usecase.GetHomeFeedUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.GetTrendStatsUseCase
-import com.rhesdev.warta.feature.news.domain.usecase.LoadMoreNewsUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.RefreshNewsByCategoryUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.RefreshNewsByDayUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.RefreshNewsUseCase
 import com.rhesdev.warta.feature.news.presentation.home.components.homeCategories
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private const val PAGE_SIZE = 100
-
-// Home state holder observing Room once and refreshing from the API.
+// Home state holder: page stream from Room/RemoteMediator plus refresh + trend stats.
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getTopNewsUseCase: GetTopNewsUseCase,
+    private val getHomeFeedUseCase: GetHomeFeedUseCase,
     private val refreshNewsUseCase: RefreshNewsUseCase,
     private val refreshNewsByCategoryUseCase: RefreshNewsByCategoryUseCase,
     private val refreshNewsByDayUseCase: RefreshNewsByDayUseCase,
-    private val loadMoreNewsUseCase: LoadMoreNewsUseCase,
     private val getTrendStatsUseCase: GetTrendStatsUseCase
 ) : ViewModel() {
+
+    val homeFeed: Flow<PagingData<News>> = getHomeFeedUseCase().cachedIn(viewModelScope)
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     private var refreshJob: Job? = null
-    private var latestOffset = PAGE_SIZE
 
     init {
-        observeNews()
         refresh()
         loadTrendStats()
     }
@@ -51,19 +50,6 @@ class HomeViewModel @Inject constructor(
             is HomeUiEvent.OnDaySelected -> selectDay(event.day)
             HomeUiEvent.OnRetry -> refresh(isInitial = true)
             HomeUiEvent.OnRefresh -> refresh(isInitial = false)
-            HomeUiEvent.OnLoadMore -> loadMore()
-        }
-    }
-
-    private fun observeNews() {
-        viewModelScope.launch {
-            getTopNewsUseCase()
-                .catch { e ->
-                    _uiState.update { it.copy(error = e.toUserMessage(), isLoading = false) }
-                }
-                .collect { news ->
-                    _uiState.update { it.copy(allNews = news, isLoading = false) }
-                }
         }
     }
 
@@ -77,7 +63,6 @@ class HomeViewModel @Inject constructor(
             }
             try {
                 refreshNewsUseCase()
-                latestOffset = PAGE_SIZE
             } catch (e: Exception) {
                 _uiState.update { it.copy(error = e.toUserMessage()) }
             } finally {
@@ -92,10 +77,7 @@ class HomeViewModel @Inject constructor(
         if (query != null && category != null) {
             silentFetch { refreshNewsByCategoryUseCase(query, category) }
         } else {
-            silentFetch {
-                refreshNewsUseCase()
-                latestOffset = PAGE_SIZE
-            }
+            silentFetch { refreshNewsUseCase() }
         }
     }
 
@@ -122,22 +104,5 @@ class HomeViewModel @Inject constructor(
         _uiState.update { it.copy(selectedDay = day) }
         if (day == null) return
         silentFetch { refreshNewsByDayUseCase(day) }
-    }
-
-    private fun loadMore() {
-        val state = _uiState.value
-        if (state.isLoading || state.isLoadingMore) return
-        if (state.selectedCategory != null || state.selectedDay != null) return
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoadingMore = true) }
-            try {
-                loadMoreNewsUseCase(latestOffset)
-                latestOffset += PAGE_SIZE
-            } catch (e: Exception) {
-                _uiState.update { it.copy(error = e.toUserMessage()) }
-            } finally {
-                _uiState.update { it.copy(isLoadingMore = false) }
-            }
-        }
     }
 }

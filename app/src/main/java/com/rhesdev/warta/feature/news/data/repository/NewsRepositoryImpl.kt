@@ -1,11 +1,18 @@
 package com.rhesdev.warta.feature.news.data.repository
 
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
 import com.rhesdev.warta.core.di.IoDispatcher
 import com.rhesdev.warta.feature.news.data.local.NewsDao
+import com.rhesdev.warta.feature.news.data.mapper.toContent
 import com.rhesdev.warta.feature.news.data.mapper.toContent
 import com.rhesdev.warta.feature.news.data.mapper.toDomain
 import com.rhesdev.warta.feature.news.data.mapper.toEntity
 import com.rhesdev.warta.feature.news.data.remote.NewsApi
+import com.rhesdev.warta.feature.news.data.remote.NewsRemoteMediator
 import com.rhesdev.warta.feature.news.domain.model.News
 import com.rhesdev.warta.feature.news.domain.model.NewsStats
 import com.rhesdev.warta.feature.news.domain.repository.NewsRepository
@@ -24,12 +31,28 @@ private val dayFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 class NewsRepositoryImpl @Inject constructor(
     private val api: NewsApi,
     private val dao: NewsDao,
+    private val remoteMediator: NewsRemoteMediator,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : NewsRepository {
 
     override fun getTopNews(): Flow<List<News>> {
         return dao.getAllNews().map { entities ->
             entities.map { it.toDomain() }
+        }
+    }
+
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getHomeFeed(): Flow<PagingData<News>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                prefetchDistance = 8,
+                enablePlaceholders = false
+            ),
+            remoteMediator = remoteMediator,
+            pagingSourceFactory = { dao.pagingSource() }
+        ).flow.map { pagingData ->
+            pagingData.map { it.toDomain() }
         }
     }
 
@@ -73,15 +96,6 @@ class NewsRepositoryImpl @Inject constructor(
             try {
                 val response = api.searchNews(query, date = "48h")
                 dao.insertAll(response.results.map { it.toEntity().copy(category = category) })
-            } catch (_: Exception) { }
-        }
-    }
-
-    override suspend fun loadMoreNews(offset: Int) {
-        withContext(ioDispatcher) {
-            try {
-                val response = api.getNews(offset = offset)
-                dao.insertAll(response.results.map { it.toEntity() })
             } catch (_: Exception) { }
         }
     }

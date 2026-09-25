@@ -76,6 +76,7 @@ API (Retrofit) → DTO → Entity (Room) → Repository (Flow) → UseCase → V
 
 - UI always reads from Room (Single Source of Truth).
 - API updates Room, never bypasses directly to UI.
+- The Home feed is paginated with Paging 3: `NewsRemoteMediator` fetches API pages into Room, the repository exposes `Flow<PagingData<News>>` via a `Pager`, and the UI renders it with `collectAsLazyPagingItems()` + `cachedIn(viewModelScope)`.
 - Repository is the single source of truth for data access.
 - Errors are normalized once in `core/utils/AppError.kt` (`Throwable.toUserMessage()`) and reused by every ViewModel; ViewModels never output raw exception text.
 

@@ -25,6 +25,7 @@ Aplikasi agregator berita Indonesia berbasis *Offline-First* yang menyajikan ber
 | Architecture | Clean Architecture + MVVM |
 | DI | Dagger Hilt (+ Hilt-Work) |
 | Local DB | Room Database (v2, with migration) |
+| Pagination | Paging 3 (`RemoteMediator` + Room `PagingSource`) |
 | Network | Retrofit + OkHttp + Gson |
 | Background Work | WorkManager (periodic refresh) |
 | Image Loading | Coil (shimmer/error placeholders) |

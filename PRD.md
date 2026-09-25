@@ -25,6 +25,7 @@ AI Agent **wajib** menggunakan pustaka berikut dengan versi stabil (atau BOM ter
 * **UI:** Jetpack Compose (Material Design 3)
 * **Dependency Injection:** Dagger Hilt (`@HiltAndroidApp`, `@AndroidEntryPoint`, `@HiltViewModel`, `@HiltWorker`)
 * **Local Database / Cache:** Room Database v2 (dengan dukungan Coroutines/Flow, plus 1 migrasi v1→v2)
+* **Pagination:** Paging 3 (`RemoteMediator` + Room `PagingSource`) untuk feed Home
 * **Networking:** Retrofit2 + OkHttp3 (Logging Interceptor) + Gson
 * **Background Work:** WorkManager (periodic refresh 30 menit, hanya saat online)
 * **Asynchronous / Reactive:** Kotlin Coroutines & `StateFlow`

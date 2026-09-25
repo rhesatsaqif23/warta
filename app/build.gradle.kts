@@ -74,6 +74,7 @@ dependencies {
     // Room
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
+    implementation(libs.room.paging)
     ksp(libs.room.compiler)
 
     // Retrofit + OkHttp
@@ -86,6 +87,10 @@ dependencies {
 
     // Splitties (type-safe activity starts)
     implementation(libs.splitties.activities)
+
+    // Paging 3
+    implementation(libs.androidx.paging.runtime.ktx)
+    implementation(libs.androidx.paging.compose)
 
     // Testing
     testImplementation(libs.junit)
