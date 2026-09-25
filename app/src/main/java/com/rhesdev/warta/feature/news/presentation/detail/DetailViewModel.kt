@@ -2,6 +2,7 @@ package com.rhesdev.warta.feature.news.presentation.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rhesdev.warta.core.utils.toUserMessage
 import com.rhesdev.warta.feature.news.domain.usecase.GetArticleBodyUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.GetNewsByLinkUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -48,7 +49,7 @@ class DetailViewModel @Inject constructor(
                     )
                 }
             } catch (e: Exception) {
-                _uiState.update { it.copy(error = e.message, isLoading = false) }
+                _uiState.update { it.copy(error = e.toUserMessage(), isLoading = false) }
             }
         }
     }
@@ -57,19 +58,21 @@ class DetailViewModel @Inject constructor(
         val state = _uiState.value
         if (state.fullText != null || state.isLoadingBody) return
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoadingBody = true, bodyError = null) }
+            _uiState.update {
+                it.copy(isLoadingBody = true, bodyError = null, bodyNotAvailable = false)
+            }
             try {
                 val body = getArticleBodyUseCase(newsLink)
                 if (body != null) {
                     _uiState.update { it.copy(fullText = body, isLoadingBody = false) }
                 } else {
                     _uiState.update {
-                        it.copy(bodyError = "Versi lengkap tidak tersedia", isLoadingBody = false)
+                        it.copy(bodyNotAvailable = true, isLoadingBody = false)
                     }
                 }
             } catch (e: Exception) {
                 _uiState.update {
-                    it.copy(bodyError = e.message, isLoadingBody = false)
+                    it.copy(bodyError = e.toUserMessage(), isLoadingBody = false)
                 }
             }
         }

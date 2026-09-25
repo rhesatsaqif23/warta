@@ -17,9 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.rhesdev.warta.R
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
 
 // Shared full-screen error state with retry action.
@@ -30,7 +32,7 @@ fun ErrorState(
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
     icon: ImageVector = Icons.Outlined.CloudOff,
-    retryLabel: String = "Coba Lagi"
+    retryLabel: String = stringResource(R.string.retry)
 ) {
     Column(
         modifier = modifier.fillMaxSize(),

@@ -6,6 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.ui.res.stringResource
+import com.rhesdev.warta.R
 import com.rhesdev.warta.core.presentation.components.EmptyState
 import com.rhesdev.warta.core.presentation.components.WartaTabHost
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
@@ -32,8 +34,8 @@ class ProfileActivity : ComponentActivity() {
                     onSearchClick = { WartaNavigator.openSearch(this) }
                 ) { modifier ->
                     EmptyState(
-                        title = "Profil",
-                        message = "Halaman profil segera hadir",
+                        title = stringResource(R.string.profile_title),
+                        message = stringResource(R.string.profile_coming_soon),
                         icon = Icons.Outlined.Person,
                         modifier = modifier
                     )

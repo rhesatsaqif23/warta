@@ -26,12 +26,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.rhesdev.warta.R
 import com.rhesdev.warta.core.presentation.components.EditableSearchField
 import com.rhesdev.warta.core.presentation.components.EmptyState
 import com.rhesdev.warta.core.presentation.components.ErrorState
@@ -75,7 +77,7 @@ fun SearchScreen(
                 IconButton(onClick = onBackClick) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Kembali",
+                        contentDescription = stringResource(R.string.cd_back),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -92,7 +94,7 @@ fun SearchScreen(
                 IconButton(onClick = {}) {
                     Icon(
                         imageVector = Icons.Default.MoreVert,
-                        contentDescription = "Menu",
+                        contentDescription = stringResource(R.string.cd_menu),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -134,9 +136,9 @@ fun SearchContent(
         if (uiState.query.isNotBlank()) {
             Text(
                 text = buildAnnotatedString {
-                    append("Search for “")
+                    append(stringResource(R.string.search_for_prefix))
                     withStyle(SpanStyle(color = Primary)) { append(uiState.query) }
-                    append("”")
+                    append(stringResource(R.string.search_for_suffix))
                 },
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
@@ -146,15 +148,15 @@ fun SearchContent(
             uiState.isLoading -> LoadingScreen()
             uiState.error != null && uiState.results.isEmpty() -> {
                 ErrorState(
-                    title = "Pencarian gagal",
-                    message = uiState.error ?: "Terjadi kesalahan",
+                    title = stringResource(R.string.error_search),
+                    message = uiState.error ?: stringResource(R.string.error_generic),
                     onRetry = { onEvent(SearchUiEvent.OnQueryChanged(uiState.query)) }
                 )
             }
             uiState.results.isEmpty() && uiState.query.isNotBlank() -> {
                 EmptyState(
-                    title = "Tidak ada hasil",
-                    message = "Tidak ada hasil untuk \"${uiState.query}\"",
+                    title = stringResource(R.string.empty_search),
+                    message = stringResource(R.string.empty_search_result, uiState.query),
                     illustrationModel = "file:///android_asset/img_search_empty.png"
                 )
             }

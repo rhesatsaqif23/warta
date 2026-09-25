@@ -21,8 +21,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.rhesdev.warta.R
 import com.rhesdev.warta.core.utils.DateFormatter
 import com.rhesdev.warta.feature.news.domain.model.News
 
@@ -70,10 +72,10 @@ fun PopularNewsCard(
                 modifier = Modifier.weight(1f)
             )
             IconButton(onClick = onShareClick) {
-                Icon(Icons.Default.Share, contentDescription = "Bagikan")
+                Icon(Icons.Default.Share, contentDescription = stringResource(R.string.cd_share))
             }
             IconButton(onClick = { }) {
-                Icon(Icons.Default.MoreVert, contentDescription = "Lainnya")
+                Icon(Icons.Default.MoreVert, contentDescription = stringResource(R.string.cd_more))
             }
         }
     }

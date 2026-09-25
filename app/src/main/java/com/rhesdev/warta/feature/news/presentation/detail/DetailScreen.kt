@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -29,6 +30,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.rhesdev.warta.R
 import com.rhesdev.warta.core.presentation.components.ErrorState
 import com.rhesdev.warta.core.presentation.components.LoadingScreen
 import com.rhesdev.warta.core.presentation.theme.Accent
@@ -55,7 +57,7 @@ fun DetailScreen(
             type = "text/plain"
             putExtra(Intent.EXTRA_TEXT, "${news.title}\n\n$excerpt\n\n${news.link}")
         }
-        context.startActivity(Intent.createChooser(shareIntent, "Bagikan Berita"))
+        context.startActivity(Intent.createChooser(shareIntent, context.getString(R.string.share_chooser)))
     }
 
     Scaffold(
@@ -92,8 +94,8 @@ fun DetailContent(
         uiState.isLoading -> LoadingScreen(modifier = modifier)
         uiState.error != null && uiState.news == null -> {
             ErrorState(
-                title = "Gagal memuat berita",
-                message = uiState.error ?: "Terjadi kesalahan",
+                title = stringResource(R.string.error_news_load),
+                message = uiState.error ?: stringResource(R.string.error_generic),
                 onRetry = onRetry,
                 modifier = modifier
             )
@@ -104,6 +106,7 @@ fun DetailContent(
                 fullText = uiState.fullText,
                 isLoadingBody = uiState.isLoadingBody,
                 bodyError = uiState.bodyError,
+                bodyNotAvailable = uiState.bodyNotAvailable,
                 onLoadFullText = onLoadFullText,
                 onOpenInBrowser = onOpenInBrowser,
                 modifier = modifier
@@ -133,6 +136,7 @@ private fun NewsDetailContent(
     fullText: String?,
     isLoadingBody: Boolean,
     bodyError: String?,
+    bodyNotAvailable: Boolean,
     onLoadFullText: () -> Unit,
     onOpenInBrowser: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -183,7 +187,17 @@ private fun NewsDetailContent(
                 isLoadingBody -> LoadingScreen()
                 fullText != null -> {
                     TextButton(onClick = { onOpenInBrowser(news.link) }) {
-                        Text("Buka di Browser")
+                        Text(stringResource(R.string.open_in_browser))
+                    }
+                }
+                bodyNotAvailable -> {
+                    Text(
+                        text = stringResource(R.string.body_not_available),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                    TextButton(onClick = { onOpenInBrowser(news.link) }) {
+                        Text(stringResource(R.string.open_in_browser))
                     }
                 }
                 bodyError != null -> {
@@ -193,12 +207,12 @@ private fun NewsDetailContent(
                         color = MaterialTheme.colorScheme.error
                     )
                     TextButton(onClick = { onOpenInBrowser(news.link) }) {
-                        Text("Buka di Browser")
+                        Text(stringResource(R.string.open_in_browser))
                     }
                 }
                 else -> {
                     TextButton(onClick = onLoadFullText) {
-                        Text("Baca Selengkapnya")
+                        Text(stringResource(R.string.read_more))
                     }
                 }
             }

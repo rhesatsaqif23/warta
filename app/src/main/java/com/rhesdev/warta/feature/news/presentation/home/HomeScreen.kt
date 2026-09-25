@@ -19,9 +19,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.rhesdev.warta.R
 import com.rhesdev.warta.core.presentation.components.EmptyState
 import com.rhesdev.warta.core.presentation.components.ErrorState
 import com.rhesdev.warta.core.presentation.components.LoadingScreen
@@ -93,15 +95,15 @@ fun HomeContent(
             }
             uiState.error != null && uiState.filteredNews.isEmpty() -> StatePlaceholder {
                 ErrorState(
-                    title = "Gagal memuat berita",
-                    message = uiState.error ?: "Terjadi kesalahan",
+                    title = stringResource(R.string.error_news_load),
+                    message = uiState.error ?: stringResource(R.string.error_generic),
                     onRetry = { onEvent(HomeUiEvent.OnRetry) }
                 )
             }
             uiState.filteredNews.isEmpty() -> StatePlaceholder {
                 EmptyState(
-                    title = "Tidak ada berita",
-                    message = "Belum ada berita untuk kategori ini"
+                    title = stringResource(R.string.empty_news),
+                    message = stringResource(R.string.empty_news_category)
                 )
             }
             else -> NewsSections(
@@ -149,7 +151,7 @@ private fun LazyListScope.NewsSections(
     uiState.popularNews?.let { popular ->
         item {
             SectionHeader(
-                "Popular Now",
+                stringResource(R.string.section_popular_now),
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
         }
@@ -166,7 +168,7 @@ private fun LazyListScope.NewsSections(
     if (uiState.trendingNews.isNotEmpty()) {
         item {
             SectionHeader(
-                "Trending Now",
+                stringResource(R.string.section_trending_now),
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
         }

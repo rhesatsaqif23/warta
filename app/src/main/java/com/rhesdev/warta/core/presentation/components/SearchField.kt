@@ -24,8 +24,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.rhesdev.warta.R
 import com.rhesdev.warta.core.presentation.theme.OutlineVariant
 
 // Read-only search field that navigates to Search screen on tap.
@@ -35,14 +37,14 @@ fun SearchField(onClick: () -> Unit, modifier: Modifier = Modifier) {
         modifier = modifier.clickable(onClick = onClick)
     ) {
         Text(
-            text = "Cari berita...",
+            text = stringResource(R.string.search_hint),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.weight(1f)
         )
         Icon(
             Icons.Default.Search,
-            contentDescription = "Cari",
+            contentDescription = stringResource(R.string.cd_search),
             tint = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
@@ -55,7 +57,7 @@ fun EditableSearchField(
     onValueChange: (String) -> Unit,
     onClearClick: () -> Unit,
     modifier: Modifier = Modifier,
-    placeholder: String = "Cari berita...",
+    placeholder: String = stringResource(R.string.search_hint),
     focusRequester: FocusRequester? = null
 ) {
     SearchFieldContainer(modifier = modifier) {
@@ -93,14 +95,14 @@ fun EditableSearchField(
             if (value.isNotEmpty()) {
                 Icon(
                     imageVector = Icons.Default.Clear,
-                    contentDescription = "Hapus",
+                    contentDescription = stringResource(R.string.cd_clear),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.clickable(onClick = onClearClick)
                 )
             } else {
                 Icon(
                     imageVector = Icons.Default.Search,
-                    contentDescription = "Cari",
+                    contentDescription = stringResource(R.string.cd_search),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }

@@ -1,5 +1,6 @@
 package com.rhesdev.warta.feature.news.data.repository
 
+import com.rhesdev.warta.core.di.IoDispatcher
 import com.rhesdev.warta.feature.news.data.local.NewsDao
 import com.rhesdev.warta.feature.news.data.mapper.toContent
 import com.rhesdev.warta.feature.news.data.mapper.toDomain
@@ -8,7 +9,7 @@ import com.rhesdev.warta.feature.news.data.remote.NewsApi
 import com.rhesdev.warta.feature.news.domain.model.News
 import com.rhesdev.warta.feature.news.domain.model.NewsStats
 import com.rhesdev.warta.feature.news.domain.repository.NewsRepository
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -22,7 +23,8 @@ private val dayFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 // Room + API repository implementing the domain contract.
 class NewsRepositoryImpl @Inject constructor(
     private val api: NewsApi,
-    private val dao: NewsDao
+    private val dao: NewsDao,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : NewsRepository {
 
     override fun getTopNews(): Flow<List<News>> {
@@ -38,13 +40,13 @@ class NewsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getNewsByLink(link: String): News? {
-        return withContext(Dispatchers.IO) {
+        return withContext(ioDispatcher) {
             dao.getNewsByLink(link)?.toDomain()
         }
     }
 
     override suspend fun getArticleBody(link: String): String? {
-        return withContext(Dispatchers.IO) {
+        return withContext(ioDispatcher) {
             dao.getNewsByLink(link)?.content?.takeIf { it.isNotBlank() }?.let { return@withContext it }
             try {
                 val body = api.getArticle(link).toContent()
@@ -58,7 +60,7 @@ class NewsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun refreshNews() {
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             try {
                 val response = api.getNews()
                 dao.insertAll(response.results.map { it.toEntity() })
@@ -67,7 +69,7 @@ class NewsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun refreshNewsByCategory(query: String, category: String) {
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             try {
                 val response = api.searchNews(query, date = "48h")
                 dao.insertAll(response.results.map { it.toEntity().copy(category = category) })
@@ -76,7 +78,7 @@ class NewsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun loadMoreNews(offset: Int) {
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             try {
                 val response = api.getNews(offset = offset)
                 dao.insertAll(response.results.map { it.toEntity() })
@@ -85,7 +87,7 @@ class NewsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun refreshNewsByDay(day: String) {
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             try {
                 val parsed = dayFormat.parse(day) ?: return@withContext
                 val next = dayFormat.format(
@@ -101,7 +103,7 @@ class NewsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTrendStats(): NewsStats {
-        return withContext(Dispatchers.IO) {
+        return withContext(ioDispatcher) {
             try {
                 api.getStats().toDomain()
             } catch (_: Exception) {
@@ -111,7 +113,7 @@ class NewsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getSearchStats(query: String): NewsStats {
-        return withContext(Dispatchers.IO) {
+        return withContext(ioDispatcher) {
             try {
                 api.getStats(q = query).toDomain()
             } catch (_: Exception) {
@@ -121,7 +123,7 @@ class NewsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun searchAndRefresh(query: String) {
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             try {
                 val response = api.searchNews(query)
                 dao.insertAll(response.results.map { it.toEntity() })

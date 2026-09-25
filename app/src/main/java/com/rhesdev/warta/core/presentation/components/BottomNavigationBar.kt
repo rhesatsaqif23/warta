@@ -21,20 +21,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.annotation.StringRes
+import com.rhesdev.warta.R
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
 
 data class BottomNavItem(
     val route: String,
     val icon: ImageVector,
-    val label: String
+    @StringRes val labelRes: Int
 )
 
 val bottomNavItems = listOf(
-    BottomNavItem("home", Icons.Outlined.Home, "Beranda"),
-    BottomNavItem("category", Icons.Outlined.GridView, "Kategori"),
-    BottomNavItem("profile", Icons.Outlined.Person, "Profil")
+    BottomNavItem("home", Icons.Outlined.Home, R.string.nav_home),
+    BottomNavItem("category", Icons.Outlined.GridView, R.string.nav_category),
+    BottomNavItem("profile", Icons.Outlined.Person, R.string.nav_profile)
 )
 
 // Compact bottom bar with equal click areas.
@@ -80,7 +83,7 @@ fun WartaBottomNavigationBar(
                     ) {
                         Icon(
                             imageVector = item.icon,
-                            contentDescription = item.label,
+                            contentDescription = stringResource(item.labelRes),
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }

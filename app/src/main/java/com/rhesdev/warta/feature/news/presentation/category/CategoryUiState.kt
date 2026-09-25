@@ -1,5 +1,6 @@
 package com.rhesdev.warta.feature.news.presentation.category
 
+import androidx.annotation.StringRes
 import com.rhesdev.warta.feature.news.domain.model.News
 import com.rhesdev.warta.feature.news.presentation.home.components.homeCategories
 
@@ -13,7 +14,7 @@ data class CategoryUiState(
 ) {
     data class Section(
         val key: String,
-        val label: String,
+        @StringRes val labelRes: Int,
         val articles: List<News>,
         val total: Int,
         val expanded: Boolean
@@ -26,7 +27,7 @@ data class CategoryUiState(
             if (list.isEmpty()) null
             else Section(
                 key = key,
-                label = cat.label,
+                labelRes = cat.labelRes,
                 articles = if (key in expanded) list else list.take(3),
                 total = list.size,
                 expanded = key in expanded

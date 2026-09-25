@@ -2,6 +2,7 @@ package com.rhesdev.warta.feature.news.presentation.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rhesdev.warta.core.utils.toUserMessage
 import com.rhesdev.warta.feature.news.domain.usecase.GetSearchStatsUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.SearchAndRefreshUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.SearchNewsUseCase
@@ -54,12 +55,12 @@ class SearchViewModel @Inject constructor(
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                _uiState.update { it.copy(error = e.message) }
+                _uiState.update { it.copy(error = e.toUserMessage()) }
             }
             searchNewsUseCase(query)
                 .catch { e ->
                     if (e is CancellationException) throw e
-                    _uiState.update { it.copy(error = e.message, isLoading = false) }
+                    _uiState.update { it.copy(error = e.toUserMessage(), isLoading = false) }
                 }
                 .collect { results ->
                     _uiState.update {

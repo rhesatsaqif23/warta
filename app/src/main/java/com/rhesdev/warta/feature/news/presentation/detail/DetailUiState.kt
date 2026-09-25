@@ -9,5 +9,6 @@ data class DetailUiState(
     val error: String? = null,
     val fullText: String? = null,
     val isLoadingBody: Boolean = false,
-    val bodyError: String? = null
+    val bodyError: String? = null,
+    val bodyNotAvailable: Boolean = false
 )

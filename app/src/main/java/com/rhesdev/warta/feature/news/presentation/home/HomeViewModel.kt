@@ -2,6 +2,7 @@ package com.rhesdev.warta.feature.news.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rhesdev.warta.core.utils.toUserMessage
 import com.rhesdev.warta.feature.news.domain.usecase.GetTopNewsUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.GetTrendStatsUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.LoadMoreNewsUseCase
@@ -58,7 +59,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             getTopNewsUseCase()
                 .catch { e ->
-                    _uiState.update { it.copy(error = e.message, isLoading = false) }
+                    _uiState.update { it.copy(error = e.toUserMessage(), isLoading = false) }
                 }
                 .collect { news ->
                     _uiState.update { it.copy(allNews = news, isLoading = false) }
@@ -78,7 +79,7 @@ class HomeViewModel @Inject constructor(
                 refreshNewsUseCase()
                 latestOffset = PAGE_SIZE
             } catch (e: Exception) {
-                _uiState.update { it.copy(error = e.message) }
+                _uiState.update { it.copy(error = e.toUserMessage()) }
             } finally {
                 _uiState.update { it.copy(isLoading = false, isRefreshing = false) }
             }
@@ -105,7 +106,7 @@ class HomeViewModel @Inject constructor(
             try {
                 fetch()
             } catch (e: Exception) {
-                _uiState.update { it.copy(error = e.message) }
+                _uiState.update { it.copy(error = e.toUserMessage()) }
             }
         }
     }
@@ -133,7 +134,7 @@ class HomeViewModel @Inject constructor(
                 loadMoreNewsUseCase(latestOffset)
                 latestOffset += PAGE_SIZE
             } catch (e: Exception) {
-                _uiState.update { it.copy(error = e.message) }
+                _uiState.update { it.copy(error = e.toUserMessage()) }
             } finally {
                 _uiState.update { it.copy(isLoadingMore = false) }
             }

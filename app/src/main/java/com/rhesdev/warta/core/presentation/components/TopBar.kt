@@ -13,8 +13,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.rhesdev.warta.R
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
 
 // App top bar: logo on main screens, back arrow on nested screens.
@@ -36,7 +38,7 @@ fun WartaTopBar(
             IconButton(onClick = onBackClick) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Kembali",
+                    contentDescription = stringResource(R.string.cd_back),
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
@@ -53,7 +55,7 @@ fun WartaTopBar(
         IconButton(onClick = onMenuClick) {
             Icon(
                 imageVector = Icons.Default.MoreVert,
-                contentDescription = "Menu",
+                contentDescription = stringResource(R.string.cd_menu),
                 tint = MaterialTheme.colorScheme.primary
             )
         }
