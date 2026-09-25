@@ -1,3 +1,60 @@
 <resources>
     <string name="app_name">Warta</string>
+
+    <!-- Navigation / bottom bar -->
+    <string name="nav_home">Beranda</string>
+    <string name="nav_category">Kategori</string>
+    <string name="nav_profile">Profil</string>
+
+    <!-- Accessibility descriptions -->
+    <string name="cd_back">Kembali</string>
+    <string name="cd_menu">Menu</string>
+    <string name="cd_search">Cari</string>
+    <string name="cd_clear">Hapus</string>
+    <string name="cd_share">Bagikan</string>
+    <string name="cd_more">Lainnya</string>
+
+    <!-- Search -->
+    <string name="search_hint">Cari berita...</string>
+    <string name="search_for_prefix">Search for “</string>
+    <string name="search_for_suffix">”</string>
+
+    <!-- Home sections -->
+    <string name="section_popular_now">Popular Now</string>
+    <string name="section_trending_now">Trending Now</string>
+    <string name="section_this_week">Sepekan terakhir</string>
+    <string name="section_more">Lainnya >>></string>
+
+    <!-- Category labels -->
+    <string name="category_all">Semua</string>
+    <string name="category_national">Nasional</string>
+    <string name="category_technology">Teknologi</string>
+    <string name="category_economy">Ekonomi</string>
+    <string name="category_sports">Olahraga</string>
+    <string name="category_entertainment">Hiburan</string>
+    <string name="category_politics">Politik</string>
+    <string name="category_health">Kesehatan</string>
+
+    <!-- Errors -->
+    <string name="error_news_load">Gagal memuat berita</string>
+    <string name="error_generic">Terjadi kesalahan</string>
+    <string name="error_search">Pencarian gagal</string>
+    <string name="retry">Coba Lagi</string>
+
+    <!-- Empty states -->
+    <string name="empty_news">Tidak ada berita</string>
+    <string name="empty_news_category">Belum ada berita untuk kategori ini</string>
+    <string name="empty_news_all_categories">Belum ada berita untuk kategori mana pun</string>
+    <string name="empty_search">Tidak ada hasil</string>
+    <string name="empty_search_result">Tidak ada hasil untuk “%1$s”</string>
+
+    <!-- Detail -->
+    <string name="share_chooser">Bagikan Berita</string>
+    <string name="open_in_browser">Buka di Browser</string>
+    <string name="read_more">Baca Selengkapnya</string>
+    <string name="body_not_available">Versi lengkap tidak tersedia</string>
+
+    <!-- Profile -->
+    <string name="profile_title">Profil</string>
+    <string name="profile_coming_soon">Halaman profil segera hadir</string>
 </resources>

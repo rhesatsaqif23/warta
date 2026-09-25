@@ -2,6 +2,7 @@ package com.rhesdev.warta.feature.news.presentation.category
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rhesdev.warta.core.utils.toUserMessage
 import com.rhesdev.warta.feature.news.domain.usecase.GetTopNewsUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.RefreshNewsByCategoryUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.RefreshNewsUseCase
@@ -55,7 +56,7 @@ class CategoryViewModel @Inject constructor(
         viewModelScope.launch {
             getTopNewsUseCase()
                 .catch { e ->
-                    _uiState.update { it.copy(error = e.message, isLoading = false) }
+                    _uiState.update { it.copy(error = e.toUserMessage(), isLoading = false) }
                 }
                 .collect { news ->
                     _uiState.update { it.copy(allNews = news, isLoading = false) }
@@ -79,7 +80,7 @@ class CategoryViewModel @Inject constructor(
                     refreshNewsByCategoryUseCase(query, key)
                 }
             } catch (e: Exception) {
-                _uiState.update { it.copy(error = e.message) }
+                _uiState.update { it.copy(error = e.toUserMessage()) }
             } finally {
                 _uiState.update { it.copy(isLoading = false, isRefreshing = false) }
             }

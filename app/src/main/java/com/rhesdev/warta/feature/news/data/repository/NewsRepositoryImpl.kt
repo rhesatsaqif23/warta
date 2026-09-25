@@ -1,14 +1,22 @@
 package com.rhesdev.warta.feature.news.data.repository
 
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
+import com.rhesdev.warta.core.di.IoDispatcher
 import com.rhesdev.warta.feature.news.data.local.NewsDao
+import com.rhesdev.warta.feature.news.data.mapper.toContent
 import com.rhesdev.warta.feature.news.data.mapper.toContent
 import com.rhesdev.warta.feature.news.data.mapper.toDomain
 import com.rhesdev.warta.feature.news.data.mapper.toEntity
 import com.rhesdev.warta.feature.news.data.remote.NewsApi
+import com.rhesdev.warta.feature.news.data.remote.NewsRemoteMediator
 import com.rhesdev.warta.feature.news.domain.model.News
 import com.rhesdev.warta.feature.news.domain.model.NewsStats
 import com.rhesdev.warta.feature.news.domain.repository.NewsRepository
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -22,12 +30,29 @@ private val dayFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 // Room + API repository implementing the domain contract.
 class NewsRepositoryImpl @Inject constructor(
     private val api: NewsApi,
-    private val dao: NewsDao
+    private val dao: NewsDao,
+    private val remoteMediator: NewsRemoteMediator,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : NewsRepository {
 
     override fun getTopNews(): Flow<List<News>> {
         return dao.getAllNews().map { entities ->
             entities.map { it.toDomain() }
+        }
+    }
+
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getHomeFeed(): Flow<PagingData<News>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                prefetchDistance = 8,
+                enablePlaceholders = false
+            ),
+            remoteMediator = remoteMediator,
+            pagingSourceFactory = { dao.pagingSource() }
+        ).flow.map { pagingData ->
+            pagingData.map { it.toDomain() }
         }
     }
 
@@ -38,13 +63,13 @@ class NewsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getNewsByLink(link: String): News? {
-        return withContext(Dispatchers.IO) {
+        return withContext(ioDispatcher) {
             dao.getNewsByLink(link)?.toDomain()
         }
     }
 
     override suspend fun getArticleBody(link: String): String? {
-        return withContext(Dispatchers.IO) {
+        return withContext(ioDispatcher) {
             dao.getNewsByLink(link)?.content?.takeIf { it.isNotBlank() }?.let { return@withContext it }
             try {
                 val body = api.getArticle(link).toContent()
@@ -58,7 +83,7 @@ class NewsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun refreshNews() {
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             try {
                 val response = api.getNews()
                 dao.insertAll(response.results.map { it.toEntity() })
@@ -67,7 +92,7 @@ class NewsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun refreshNewsByCategory(query: String, category: String) {
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             try {
                 val response = api.searchNews(query, date = "48h")
                 dao.insertAll(response.results.map { it.toEntity().copy(category = category) })
@@ -75,17 +100,8 @@ class NewsRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun loadMoreNews(offset: Int) {
-        withContext(Dispatchers.IO) {
-            try {
-                val response = api.getNews(offset = offset)
-                dao.insertAll(response.results.map { it.toEntity() })
-            } catch (_: Exception) { }
-        }
-    }
-
     override suspend fun refreshNewsByDay(day: String) {
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             try {
                 val parsed = dayFormat.parse(day) ?: return@withContext
                 val next = dayFormat.format(
@@ -101,7 +117,7 @@ class NewsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTrendStats(): NewsStats {
-        return withContext(Dispatchers.IO) {
+        return withContext(ioDispatcher) {
             try {
                 api.getStats().toDomain()
             } catch (_: Exception) {
@@ -111,7 +127,7 @@ class NewsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getSearchStats(query: String): NewsStats {
-        return withContext(Dispatchers.IO) {
+        return withContext(ioDispatcher) {
             try {
                 api.getStats(q = query).toDomain()
             } catch (_: Exception) {
@@ -121,7 +137,7 @@ class NewsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun searchAndRefresh(query: String) {
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             try {
                 val response = api.searchNews(query)
                 dao.insertAll(response.results.map { it.toEntity() })

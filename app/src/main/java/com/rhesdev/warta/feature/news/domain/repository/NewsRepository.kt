@@ -1,5 +1,6 @@
 package com.rhesdev.warta.feature.news.domain.repository
 
+import androidx.paging.PagingData
 import com.rhesdev.warta.feature.news.domain.model.News
 import com.rhesdev.warta.feature.news.domain.model.NewsStats
 import kotlinx.coroutines.flow.Flow
@@ -8,6 +9,8 @@ import kotlinx.coroutines.flow.Flow
 interface NewsRepository {
 
     fun getTopNews(): Flow<List<News>>
+
+    fun getHomeFeed(): Flow<PagingData<News>>
 
     fun searchNews(query: String): Flow<List<News>>
 
@@ -18,8 +21,6 @@ interface NewsRepository {
     suspend fun refreshNews()
 
     suspend fun refreshNewsByCategory(query: String, category: String)
-
-    suspend fun loadMoreNews(offset: Int)
 
     suspend fun refreshNewsByDay(day: String)
 

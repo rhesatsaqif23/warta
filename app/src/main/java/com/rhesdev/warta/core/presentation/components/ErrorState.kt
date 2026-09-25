@@ -17,10 +17,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.rhesdev.warta.R
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
+import com.rhesdev.warta.core.utils.Dimens
 
 // Shared full-screen error state with retry action.
 @Composable
@@ -30,7 +32,7 @@ fun ErrorState(
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
     icon: ImageVector = Icons.Outlined.CloudOff,
-    retryLabel: String = "Coba Lagi"
+    retryLabel: String = stringResource(R.string.retry)
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
@@ -40,24 +42,24 @@ fun ErrorState(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            modifier = Modifier.size(80.dp),
+            modifier = Modifier.size(Dimens.stateIconSize),
             tint = MaterialTheme.colorScheme.onSurfaceVariant
         )
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(Dimens.xlMargin))
         Text(
             text = title,
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onSurface
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(Dimens.defaultMargin))
         Text(
             text = message,
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = 32.dp)
+            modifier = Modifier.padding(horizontal = Dimens.xlPadding)
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(Dimens.defaultMargin))
         Button(onClick = onRetry) {
             Text(text = retryLabel)
         }

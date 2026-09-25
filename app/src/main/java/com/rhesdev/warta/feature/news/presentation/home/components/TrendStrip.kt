@@ -20,9 +20,11 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.rhesdev.warta.R
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
+import com.rhesdev.warta.core.utils.Dimens
 import com.rhesdev.warta.feature.news.presentation.components.SectionHeader
 
 // Weekly coverage strip from the stats by_day facet.
@@ -39,18 +41,18 @@ fun TrendStrip(
     val selectedColor = MaterialTheme.colorScheme.primary
     val barColor = MaterialTheme.colorScheme.primaryContainer
 
-    Column(modifier = modifier.padding(horizontal = 16.dp)) {
+    Column(modifier = modifier.padding(horizontal = Dimens.smallPadding)) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .shadow(4.dp, RoundedCornerShape(15.dp))
-                .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(15.dp))
-                .padding(16.dp)
+                .shadow(Dimens.defaultElevation, RoundedCornerShape(Dimens.bigRadius))
+                .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(Dimens.bigRadius))
+                .padding(Dimens.smallPadding)
         ) {
-            SectionHeader("Sepekan terakhir")
+            SectionHeader(stringResource(R.string.section_this_week))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(Dimens.smallMargin)
             ) {
             days.forEach { (day, count) ->
                 val selected = day == selectedDay
@@ -63,15 +65,15 @@ fun TrendStrip(
                     Canvas(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(48.dp)
+                            .height(Dimens.trendStripHeight)
                     ) {
                         val barHeight =
-                            (size.height - 4.dp.toPx()) * (count.toFloat() / max) + 2.dp.toPx()
+                            (size.height - Dimens.trendBarTopInset.toPx()) * (count.toFloat() / max) + Dimens.trendBarMinHeight.toPx()
                         drawRoundRect(
                             color = if (selected) selectedColor else barColor,
                             topLeft = Offset(0f, size.height - barHeight),
                             size = Size(size.width, barHeight),
-                            cornerRadius = CornerRadius(4.dp.toPx())
+                            cornerRadius = CornerRadius(Dimens.trendBarCornerRadius.toPx())
                         )
                     }
                     Text(

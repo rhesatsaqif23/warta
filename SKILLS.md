@@ -2,7 +2,7 @@
 
 This project uses two sets of agent skills for AI-assisted development.
 
-## Project-Specific Skills (`docs/skills/`)
+## Project-Specific Skills (`.github/skills/`)
 
 Custom skills tailored for the Warta app architecture:
 
@@ -29,6 +29,11 @@ Standard Android development skills from [awesome-android-agent-skills](https://
 | Migration | `xml-to-compose-migration`, `rxjava-to-coroutines-migration` |
 | Build | `android-gradle-logic` |
 
+> Note: General UI skills like `compose-navigation` describe Navigation Compose; Warta uses a
+> multi-Activity pattern instead — follow `docs/conventions/NAVIGATION.md` and `AGENTS.md` over the
+> generic skill when they disagree.
+
 ## Usage
 
-AI agents automatically discover and load relevant skills when working on tasks. See `Agent.md` for project conventions.
+AI agents automatically discover and load relevant skills when working on tasks. See `AGENTS.md`
+for project conventions.

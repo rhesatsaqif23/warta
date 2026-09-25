@@ -21,9 +21,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.rhesdev.warta.R
 import com.rhesdev.warta.core.utils.DateFormatter
+import com.rhesdev.warta.core.utils.Dimens
 import com.rhesdev.warta.feature.news.domain.model.News
 
 // Popular news card with image, title, and actions.
@@ -37,10 +39,10 @@ fun PopularNewsCard(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .shadow(4.dp, RoundedCornerShape(15.dp))
-            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(15.dp))
+            .shadow(Dimens.defaultElevation, RoundedCornerShape(Dimens.bigRadius))
+            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(Dimens.bigRadius))
             .clickable(onClick = onClick)
-            .padding(bottom = 8.dp)
+            .padding(bottom = Dimens.xsPadding)
     ) {
         NewsImage(
             imageUrl = news.imageUrl,
@@ -48,20 +50,20 @@ fun PopularNewsCard(
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(178.dp)
-                .clip(RoundedCornerShape(15.dp))
+                .height(Dimens.popularImageHeight)
+                .clip(RoundedCornerShape(Dimens.bigRadius))
         )
         Text(
             text = news.title,
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface,
             maxLines = 2,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+            modifier = Modifier.padding(horizontal = Dimens.smallPadding, vertical = Dimens.xsPadding)
         )
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = Dimens.smallPadding)
         ) {
             Text(
                 text = DateFormatter.formatCardDate(news.isoDate),
@@ -70,10 +72,10 @@ fun PopularNewsCard(
                 modifier = Modifier.weight(1f)
             )
             IconButton(onClick = onShareClick) {
-                Icon(Icons.Default.Share, contentDescription = "Bagikan")
+                Icon(Icons.Default.Share, contentDescription = stringResource(R.string.cd_share))
             }
             IconButton(onClick = { }) {
-                Icon(Icons.Default.MoreVert, contentDescription = "Lainnya")
+                Icon(Icons.Default.MoreVert, contentDescription = stringResource(R.string.cd_more))
             }
         }
     }

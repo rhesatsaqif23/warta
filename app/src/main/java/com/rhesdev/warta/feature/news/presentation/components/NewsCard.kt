@@ -18,8 +18,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.rhesdev.warta.core.utils.DateFormatter
+import com.rhesdev.warta.core.utils.Dimens
 import com.rhesdev.warta.feature.news.domain.model.News
 
 // Generic news row with thumbnail, title, and source.
@@ -33,7 +33,7 @@ fun NewsCard(
         modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(16.dp),
+            .padding(Dimens.smallPadding),
         verticalAlignment = Alignment.CenterVertically
     ) {
         NewsImage(
@@ -41,11 +41,11 @@ fun NewsCard(
             contentDescription = news.title,
             contentScale = ContentScale.Crop,
             modifier = Modifier
-                .width(80.dp)
-                .height(60.dp)
-                .clip(RoundedCornerShape(8.dp))
+                .width(Dimens.cardThumbWidth)
+                .height(Dimens.cardThumbHeight)
+                .clip(RoundedCornerShape(Dimens.defaultRadius))
         )
-        Spacer(modifier = Modifier.width(12.dp))
+        Spacer(modifier = Modifier.width(Dimens.custom12dpMargin))
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = news.title,
@@ -53,7 +53,7 @@ fun NewsCard(
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(Dimens.xsMargin))
             Text(
                 text = news.source.uppercase(),
                 style = MaterialTheme.typography.labelSmall,

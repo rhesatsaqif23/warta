@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -25,19 +26,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.rhesdev.warta.R
 import com.rhesdev.warta.core.presentation.components.EditableSearchField
 import com.rhesdev.warta.core.presentation.components.EmptyState
 import com.rhesdev.warta.core.presentation.components.ErrorState
 import com.rhesdev.warta.core.presentation.components.LoadingScreen
-import com.rhesdev.warta.core.presentation.components.WartaFullLogo
 import com.rhesdev.warta.core.presentation.theme.Primary
 import com.rhesdev.warta.core.presentation.theme.WartaTheme
+import com.rhesdev.warta.core.utils.Dimens
 import com.rhesdev.warta.feature.news.domain.model.News
 import com.rhesdev.warta.feature.news.presentation.components.TrendingNewsItem
 import com.rhesdev.warta.feature.news.presentation.home.components.HomeCategoryRow
@@ -47,10 +49,18 @@ import com.rhesdev.warta.feature.news.presentation.home.components.homeCategorie
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel = hiltViewModel(),
-    onNewsClick: (String) -> Unit
+    onBackClick: () -> Unit,
+    onNewsClick: (String) -> Unit,
+    initialQuery: String? = null
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(initialQuery) {
+        if (!initialQuery.isNullOrBlank()) {
+            viewModel.onEvent(SearchUiEvent.OnQueryChanged(initialQuery))
+        }
+    }
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -61,24 +71,30 @@ fun SearchScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                    .padding(horizontal = Dimens.smallPadding, vertical = Dimens.xsPadding),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                WartaFullLogo(width = 80.dp)
+                IconButton(onClick = onBackClick) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.cd_back),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
                 EditableSearchField(
                     value = uiState.query,
                     onValueChange = { viewModel.onEvent(SearchUiEvent.OnQueryChanged(it)) },
                     onClearClick = { viewModel.onEvent(SearchUiEvent.OnClearQuery) },
                     modifier = Modifier
                         .weight(1f)
-                        .padding(horizontal = 12.dp)
+                        .padding(horizontal = Dimens.customPaddingLabel)
                         .focusRequester(focusRequester),
                     focusRequester = focusRequester
                 )
                 IconButton(onClick = {}) {
                     Icon(
                         imageVector = Icons.Default.MoreVert,
-                        contentDescription = "Menu",
+                        contentDescription = stringResource(R.string.cd_menu),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -115,39 +131,39 @@ fun SearchContent(
                 val category = homeCategories.firstOrNull { it.key == key }
                 onEvent(SearchUiEvent.OnQueryChanged(category?.query ?: ""))
             },
-            modifier = Modifier.padding(vertical = 8.dp)
+            modifier = Modifier.padding(vertical = Dimens.xsPadding)
         )
         if (uiState.query.isNotBlank()) {
             Text(
                 text = buildAnnotatedString {
-                    append("Search for “")
+                    append(stringResource(R.string.search_for_prefix))
                     withStyle(SpanStyle(color = Primary)) { append(uiState.query) }
-                    append("”")
+                    append(stringResource(R.string.search_for_suffix))
                 },
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                modifier = Modifier.padding(horizontal = Dimens.smallPadding, vertical = Dimens.xsPadding)
             )
         }
         when {
             uiState.isLoading -> LoadingScreen()
             uiState.error != null && uiState.results.isEmpty() -> {
                 ErrorState(
-                    title = "Pencarian gagal",
-                    message = uiState.error ?: "Terjadi kesalahan",
+                    title = stringResource(R.string.error_search),
+                    message = uiState.error ?: stringResource(R.string.error_generic),
                     onRetry = { onEvent(SearchUiEvent.OnQueryChanged(uiState.query)) }
                 )
             }
             uiState.results.isEmpty() && uiState.query.isNotBlank() -> {
                 EmptyState(
-                    title = "Tidak ada hasil",
-                    message = "Tidak ada hasil untuk \"${uiState.query}\"",
+                    title = stringResource(R.string.empty_search),
+                    message = stringResource(R.string.empty_search_result, uiState.query),
                     illustrationModel = "file:///android_asset/img_search_empty.png"
                 )
             }
             else -> {
                 LazyColumn(
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    contentPadding = PaddingValues(horizontal = Dimens.smallPadding, vertical = Dimens.xsPadding),
+                    verticalArrangement = Arrangement.spacedBy(Dimens.defaultMargin)
                 ) {
                     items(uiState.results, key = { it.link }) { news ->
                         TrendingNewsItem(

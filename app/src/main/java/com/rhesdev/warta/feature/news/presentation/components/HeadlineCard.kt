@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.rhesdev.warta.core.utils.Dimens
 import com.rhesdev.warta.feature.news.domain.model.News
 
 // Large clickable headline card with gradient scrim.
@@ -29,9 +29,9 @@ fun HeadlineCard(
 ) {
     Box(
         modifier = modifier
-            .width(320.dp)
-            .height(180.dp)
-            .clip(RoundedCornerShape(16.dp))
+            .width(Dimens.headlineWidth)
+            .height(Dimens.headlineHeight)
+            .clip(RoundedCornerShape(Dimens.bigRadius))
             .clickable(onClick = onClick)
     ) {
         NewsImage(
@@ -52,7 +52,7 @@ fun HeadlineCard(
             maxLines = 2,
             modifier = Modifier
                 .align(Alignment.BottomStart)
-                .padding(16.dp)
+                .padding(Dimens.smallPadding)
         )
     }
 }

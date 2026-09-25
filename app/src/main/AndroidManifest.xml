@@ -26,17 +26,38 @@
         </provider>
 
         <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.Warta"
-            android:windowSoftInputMode="adjustResize">
+            android:name=".feature.splash.presentation.SplashActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".feature.news.presentation.home.HomeActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".feature.news.presentation.category.CategoryActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".feature.profile.presentation.ProfileActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".feature.news.presentation.detail.DetailActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".feature.news.presentation.search.SearchActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

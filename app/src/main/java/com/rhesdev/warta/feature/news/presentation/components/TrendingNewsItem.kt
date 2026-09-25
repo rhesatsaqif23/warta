@@ -20,8 +20,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.rhesdev.warta.core.utils.DateFormatter
+import com.rhesdev.warta.core.utils.Dimens
 import com.rhesdev.warta.feature.news.domain.model.News
 
 // Horizontal trending news row.
@@ -34,10 +34,10 @@ fun TrendingNewsItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .shadow(4.dp, RoundedCornerShape(15.dp))
-            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(15.dp))
+            .shadow(Dimens.defaultElevation, RoundedCornerShape(Dimens.bigRadius))
+            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(Dimens.bigRadius))
             .clickable(onClick = onClick)
-            .padding(16.dp),
+            .padding(Dimens.smallPadding),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f)) {
@@ -52,7 +52,7 @@ fun TrendingNewsItem(
                 text = DateFormatter.formatCardDate(news.isoDate),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(top = 4.dp)
+                modifier = Modifier.padding(top = Dimens.xxsPadding)
             )
         }
         NewsImage(
@@ -60,9 +60,9 @@ fun TrendingNewsItem(
             contentDescription = news.title,
             contentScale = ContentScale.Crop,
             modifier = Modifier
-                .width(138.dp)
-                .height(84.dp)
-                .clip(RoundedCornerShape(10.dp))
+                .width(Dimens.newsThumbWidth)
+                .height(Dimens.newsThumbHeight)
+                .clip(RoundedCornerShape(Dimens.custom10dpRadius))
         )
     }
 }

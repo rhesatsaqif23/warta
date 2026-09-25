@@ -1,5 +1,6 @@
 package com.rhesdev.warta.feature.news.data.local
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -12,6 +13,9 @@ interface NewsDao {
 
     @Query("SELECT * FROM news_table ORDER BY isoDate DESC")
     fun getAllNews(): Flow<List<NewsEntity>>
+
+    @Query("SELECT * FROM news_table WHERE imageUrl != '' ORDER BY isoDate DESC")
+    fun pagingSource(): PagingSource<Int, NewsEntity>
 
     @Query("SELECT * FROM news_table WHERE title LIKE '%' || :query || '%' ORDER BY isoDate DESC")
     fun searchNews(query: String): Flow<List<NewsEntity>>

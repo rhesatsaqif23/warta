@@ -6,5 +6,4 @@ sealed interface HomeUiEvent {
     data class OnDaySelected(val day: String?) : HomeUiEvent
     data object OnRetry : HomeUiEvent
     data object OnRefresh : HomeUiEvent
-    data object OnLoadMore : HomeUiEvent
 }

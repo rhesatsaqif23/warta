@@ -13,9 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.rhesdev.warta.core.presentation.theme.Outline
 import com.rhesdev.warta.core.presentation.theme.PrimaryGradient
+import com.rhesdev.warta.core.utils.Dimens
 
 /** Category chip with gradient-selected / outlined-unselected states. */
 @Composable
@@ -25,7 +25,7 @@ fun CategoryChip(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val shape = RoundedCornerShape(16.dp)
+    val shape = RoundedCornerShape(Dimens.bigRadius)
     Text(
         text = label,
         style = MaterialTheme.typography.labelMedium,
@@ -36,10 +36,10 @@ fun CategoryChip(
                 if (selected) Modifier.background(PrimaryGradient)
                 else Modifier
                     .background(MaterialTheme.colorScheme.surface)
-                    .border(BorderStroke(1.dp, Outline), shape)
+                    .border(BorderStroke(Dimens.defaultStroke, Outline), shape)
             )
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(horizontal = Dimens.smallPadding, vertical = Dimens.xsPadding)
     )
 }
 

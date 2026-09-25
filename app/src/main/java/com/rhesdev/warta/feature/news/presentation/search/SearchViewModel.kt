@@ -2,10 +2,12 @@ package com.rhesdev.warta.feature.news.presentation.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rhesdev.warta.core.utils.toUserMessage
 import com.rhesdev.warta.feature.news.domain.usecase.GetSearchStatsUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.SearchAndRefreshUseCase
 import com.rhesdev.warta.feature.news.domain.usecase.SearchNewsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,12 +52,15 @@ class SearchViewModel @Inject constructor(
                 searchAndRefreshUseCase(query)
                 val stats = getSearchStatsUseCase(query)
                 _uiState.update { it.copy(totalResults = stats.total) }
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
-                _uiState.update { it.copy(error = e.message) }
+                _uiState.update { it.copy(error = e.toUserMessage()) }
             }
             searchNewsUseCase(query)
                 .catch { e ->
-                    _uiState.update { it.copy(error = e.message, isLoading = false) }
+                    if (e is CancellationException) throw e
+                    _uiState.update { it.copy(error = e.toUserMessage(), isLoading = false) }
                 }
                 .collect { results ->
                     _uiState.update {
